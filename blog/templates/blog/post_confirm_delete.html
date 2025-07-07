@@ -1,0 +1,16 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}Confirmar Eliminación{% endblock %}
+
+{% block content %}
+    <div class="alert alert-warning">
+        <h4 class="alert-heading">¿Estás seguro de que quieres eliminar este post?</h4>
+        <p>Esta acción es irreversible.</p>
+        <p><strong>"{{ post.titulo }}"</strong></p>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Sí, eliminar</button>
+            <a href="{% url 'post_detail' post.pk %}" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+{% endblock content %}

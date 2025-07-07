@@ -1,0 +1,18 @@
+{% extends 'blog/base.html' %}
+{% load crispy_forms_tags %} {# Opcional: para formularios más bonitos con django-crispy-forms #}
+
+{% block title %}
+    {% if object %}Editar Post{% else %}Crear Nuevo Post{% endif %}
+{% endblock %}
+
+{% block content %}
+    <h1 class="mb-4">{% if object %}Editar Post{% else %}Crear Nuevo Post{% endif %}</h1>
+    <div class="card card-body">
+        <form method="post" enctype="multipart/form-data"> {# ¡Importante para subir imágenes! #}
+            {% csrf_token %}
+            {{ form|crispy }} {# Renderiza el formulario usando crispy-forms #}
+            <button type="submit" class="btn btn-primary mt-3">Guardar Post</button>
+            <a href="{% url 'post_list' %}" class="btn btn-secondary mt-3">Cancelar</a>
+        </form>
+    </div>
+{% endblock content %}
