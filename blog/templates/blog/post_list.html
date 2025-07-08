@@ -1,82 +1,116 @@
 {% extends 'blog/base.html' %}
+{% load blog_tags %} 
 
-{% block title %}Noticias Recientes{% endblock %}
+{% block title %}Últimos Posts{% endblock %}
 
 {% block content %}
-    <h1 class="mb-4">Noticias Recientes</h1>
+    <h1 class="mb-4">Últimos Posts</h1>
 
-    <div class="row mb-4">
-        <div class="col-md-12">
-            <h3>Filtrar Posts</h3>
-            <form method="GET" action="{% url 'post_list' %}" class="row g-3 align-items-end">
+    {# Sección de Filtrar Posts (EXISTENTE) #}
+    <div class="card card-body mb-4">
+        <h3 class="card-title">Filtrar Posts</h3>
+        <form method="GET" action="{% url 'post_list' %}">
+            <div class="row g-3 align-items-end">
                 <div class="col-md-4">
-                    <label for="categoria" class="form-label">Categoría:</label>
-                    <select name="categoria" id="categoria" class="form-select">
-                        <option value="">Todas las categorías</option>
-                        {% for cat in categorias %}
-                            <option value="{{ cat.nombre }}" {% if request.GET.categoria == cat.nombre %}selected{% endif %}>{{ cat.nombre }}</option>
+                    <label for="id_categoria" class="form-label">Categoría:</label>
+                    <select class="form-select" id="id_categoria" name="categoria">
+                        <option value="">Todas las Categorías</option>
+                        {% for categoria in categorias %} {# 'categorias' viene del context processor #}
+                            <option value="{{ categoria.nombre }}" {% if request.GET.categoria == categoria.nombre %}selected{% endif %}>
+                                {{ categoria.nombre }}
+                            </option>
                         {% endfor %}
                     </select>
                 </div>
                 <div class="col-md-4">
-                    <label for="fecha" class="form-label">Fecha (YYYY-MM-DD):</label>
-                    <input type="date" name="fecha" id="fecha" class="form-control" value="{{ request.GET.fecha }}">
+                    <label for="id_fecha" class="form-label">Fecha (YYYY-MM-DD):</label>
+                    <input type="date" class="form-control" id="id_fecha" name="fecha" value="{{ request.GET.fecha }}">
                 </div>
                 <div class="col-md-4">
-                    <label for="comentarios" class="form-label">Comentarios:</label>
-                    <select name="comentarios" id="comentarios" class="form-select">
+                    <label for="id_comentarios" class="form-label">Comentarios:</label>
+                    <select class="form-select" id="id_comentarios" name="comentarios">
                         <option value="">Todos</option>
-                        <option value="si" {% if request.GET.comentarios == 'si' %}selected{% endif %}>Con comentarios</option>
-                        <option value="no" {% if request.GET.comentarios == 'no' %}selected{% endif %}>Sin comentarios</option>
+                        <option value="si" {% if request.GET.comentarios == 'si' %}selected{% endif %}>Con Comentarios</option>
+                        <option value="no" {% if request.GET.comentarios == 'no' %}selected{% endif %}>Sin Comentarios</option>
                     </select>
                 </div>
-                <div class="col-md-12">
-                    <button type="submit" class="btn btn-primary">Aplicar Filtros</button>
-                    <a href="{% url 'post_list' %}" class="btn btn-secondary">Limpiar Filtros</a>
-                </div>
-            </form>
+            </div>
+            <div class="mt-3">
+                <button type="submit" class="btn btn-primary me-2">Aplicar Filtros</button>
+                <a href="{% url 'post_list' %}" class="btn btn-secondary">Limpiar Filtros</a>
+            </div>
+        </form>
+    </div>
+
+    {# Sección de Ordenar Posts (NUEVA) #}
+    <div class="row mb-4 align-items-center">
+        <div class="col-md-6">
+            <div class="dropdown">
+                <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuOrdenacion" data-bs-toggle="dropdown" aria-expanded="false">
+                    Ordenar por:
+                    {% if request.GET.order_by == 'antiguedad_asc' %}Antigüedad (Más Antiguos)
+                    {% elif request.GET.order_by == 'antiguedad_desc' %}Antigüedad (Más Recientes)
+                    {% elif request.GET.order_by == 'titulo_asc' %}Título (A-Z)
+                    {% elif request.GET.order_by == 'titulo_desc' %}Título (Z-A)
+                    {% else %}Antigüedad (Más Recientes) {# Texto por defecto #}
+                    {% endif %}
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuOrdenacion">
+                    <li><a class="dropdown-item {% if not request.GET.order_by or request.GET.order_by == 'antiguedad_desc' %}active{% endif %}" href="{% url_with_params 'post_list' current_get_params 'order_by' 'antiguedad_desc' %}">Antigüedad (Más Recientes)</a></li>
+                    <li><a class="dropdown-item {% if request.GET.order_by == 'antiguedad_asc' %}active{% endif %}" href="{% url_with_params 'post_list' current_get_params 'order_by' 'antiguedad_asc' %}">Antigüedad (Más Antiguos)</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item {% if request.GET.order_by == 'titulo_asc' %}active{% endif %}" href="{% url_with_params 'post_list' current_get_params 'order_by' 'titulo_asc' %}">Título (A-Z)</a></li>
+                    <li><a class="dropdown-item {% if request.GET.order_by == 'titulo_desc' %}active{% endif %}" href="{% url_with_params 'post_list' current_get_params 'order_by' 'titulo_desc' %}">Título (Z-A)</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-6 text-end">
+            {# Puedes añadir aquí un botón para limpiar SOLO la ordenación si lo deseas #}
+            {# <a href="{% url_with_params 'post_list' current_get_params 'order_by' '' %}" class="btn btn-outline-secondary">Limpiar Ordenación</a> #}
         </div>
     </div>
 
-    <div class="row">
-        {% for post in posts %}
-            <div class="col-md-6 mb-4">
-                <div class="card h-100">
-                    {% if post.imagen_portada %}
-                        <img src="{{ post.imagen_portada.url }}" class="card-img-top" alt="{{ post.titulo }}" style="height: 200px; object-fit: cover;">
-                    {% endif %}
-                    <div class="card-body">
-                        <h5 class="card-title">{{ post.titulo }}</h5>
-                        <p class="card-text text-muted">
-                            Por {{ post.autor.username }} el {{ post.fecha_publicacion|date:"d M, Y H:i" }}
-                            {% if post.categoria %}
-                                <span class="badge bg-info text-dark">{{ post.categoria.nombre }}</span>
-                            {% endif %}
-                        </p>
-                        <p class="card-text">{{ post.contenido|truncatechars:150 }}</p>
-                        <a href="{% url 'post_detail' post.pk %}" class="btn btn-primary">Leer más</a>
-                    </div>
-                </div>
-            </div>
-        {% empty %}
-            <div class="col-12">
-                <p>No hay posts disponibles.</p>
-            </div>
-        {% endfor %}
-    </div>
 
+    {% for post in posts %}
+        <div class="card mb-4">
+            {% if post.imagen_portada %}
+                <img src="{{ post.imagen_portada.url }}" class="card-img-top" alt="{{ post.titulo }}" style="max-height: 250px; object-fit: cover;">
+            {% endif %}
+            <div class="card-body">
+                <h2 class="card-title"><a href="{% url 'post_detail' post.pk %}" class="text-dark text-decoration-none">{{ post.titulo }}</a></h2>
+                <p class="card-text text-muted">
+                    Por {{ post.autor.username }} el {{ post.fecha_publicacion|date:"d M, Y H:i" }}
+                    {% if post.categoria %}
+                        <span class="badge bg-info text-dark">{{ post.categoria.nombre }}</span>
+                    {% endif %}
+                </p>
+                <p class="card-text">{{ post.contenido|truncatechars:200 }}</p>
+                <a href="{% url 'post_detail' post.pk %}" class="btn btn-primary">Leer más &rarr;</a>
+            </div>
+        </div>
+    {% empty %}
+        <div class="alert alert-info" role="alert">
+            No hay posts disponibles. ¡Sé el primero en crear uno!
+        </div>
+    {% endfor %}
+
+    {# Paginación #}
     {% if is_paginated %}
-    <nav aria-label="Page navigation example">
-        <ul class="pagination justify-content-center">
-            {% if page_obj.has_previous %}
-                <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a></li>
-            {% endif %}
-            <li class="page-item active"><a class="page-link" href="#">{{ page_obj.number }}</a></li>
-            {% if page_obj.has_next %}
-                <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Siguiente</a></li>
-            {% endif %}
-        </ul>
-    </nav>
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                    <li class="page-item"><a class="page-link" href="{% url_with_params 'post_list' current_get_params 'page' page_obj.previous_page_number %}">Anterior</a></li>
+                {% endif %}
+
+                {% for i in paginator.page_range %}
+                    <li class="page-item {% if page_obj.number == i %}active{% endif %}"><a class="page-link" href="{% url_with_params 'post_list' current_get_params 'page' i %}">{{ i }}</a></li>
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                    <li class="page-item"><a class="page-link" href="{% url_with_params 'post_list' current_get_params 'page' page_obj.next_page_number %}">Siguiente</a></li>
+                {% endif %}
+            </ul>
+        </nav>
     {% endif %}
 
 {% endblock content %}

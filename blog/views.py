@@ -39,13 +39,39 @@ class PostListView(ListView):
             queryset = queryset.filter(comentarios__isnull=False).distinct()
         elif comentarios == 'no':
             queryset = queryset.filter(comentarios__isnull=True)
+            
+        # --- Lógica de Ordenación (NUEVA/REINTRODUCIDA) ---
+        # Definimos un orden por defecto si no se especifica ninguno
+        # Por ejemplo, los posts más recientes primero
+        order_by = self.request.GET.get('order_by', '-fecha_publicacion')
 
+        if order_by == 'antiguedad_asc':
+            queryset = queryset.order_by('fecha_publicacion') # Los más antiguos primero
+        elif order_by == 'antiguedad_desc':
+            queryset = queryset.order_by('-fecha_publicacion') # Los más recientes primero
+        elif order_by == 'titulo_asc':
+            queryset = queryset.order_by('titulo') # Orden alfabético ascendente por título
+        elif order_by == 'titulo_desc':
+            queryset = queryset.order_by('-titulo') # Orden alfabético descendente por título
+        else:
+            # Si el parámetro no es reconocido o es un valor por defecto no listado,
+            # asegura un orden por defecto para evitar resultados inconsistentes
+            queryset = queryset.order_by('-fecha_publicacion')
+        
         return queryset
-
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['categorias'] = Categoria.objects.all() # Pasar todas las categorías para el filtro
+        # Pasamos los parámetros GET actuales para que la plantilla pueda construir URLs
+        # que mantengan los filtros y la ordenación
+        context['current_get_params'] = self.request.GET.copy()
+        
         return context
+
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     context['categorias'] = Categoria.objects.all() # Pasar todas las categorías para el filtro
+    #     return context
 
 
 # Vista para ver el detalle de un post
