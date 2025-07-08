@@ -21,7 +21,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'post_list' %}">Inicio</a>
                     </li>
-
+                    
                     {# NUEVO: Menú desplegable de Categorías #}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownCategorias" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -36,6 +36,22 @@
                         </ul>
                     </li>
                     {# FIN NUEVO #}
+
+                    {# NUEVO: Enlace a la sección "Acerca de" #}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'about' %}">Acerca de</a>
+                    </li>
+                    {# FIN NUEVO: Enlace a la sección "Acerca de" #}
+
+                    {# NUEVO: Enlace a la sección "Contacto" #}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'contact' %}">Contacto</a>
+                    </li>
+                    {# NUEVO: Enlace a la sección "Donaciones" #}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'donations' %}">Donaciones</a>
+                    </li>
+
                     {% if user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'post_create' %}">Crear Post</a>

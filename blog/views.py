@@ -6,6 +6,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
 from django.contrib.auth.forms import UserCreationForm # Para el registro
 from django.contrib import messages # Para mostrar mensajes al usuario
+from django.core.mail import send_mail # Importar para enviar correos
+from django.conf import settings # Importar para acceder a settings como EMAIL_HOST_USER
+
+from .forms import ContactForm # Impor formulario de contacto
+import urllib.parse #Whatsapp
 
 # Vista para la página principal (listar posts)
 class PostListView(ListView):
@@ -49,10 +54,16 @@ class PostDetailView(DetailView):
     template_name = 'blog/post_detail.html'
     context_object_name = 'post'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        # Aquí puedes agregar el formulario de comentarios si el usuario está autenticado
-        return context
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     # Aquí puedes agregar el formulario de comentarios si el usuario está autenticado
+    #     return context
+    
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     context['categorias'] = Categoria.objects.all() # Pasar todas las categorías para el filtro
+    #     return context
+
 
 # Vista para crear un nuevo post
 class PostCreateView(LoginRequiredMixin, CreateView): # Requiere que el usuario esté logueado
@@ -64,6 +75,11 @@ class PostCreateView(LoginRequiredMixin, CreateView): # Requiere que el usuario 
         form.instance.autor = self.request.user # Asigna el usuario logueado como autor
         messages.success(self.request, '¡Tu post ha sido creado exitosamente!')
         return super().form_valid(form)
+    
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     context['categorias'] = Categoria.objects.all() # Pasar todas las categorías para el filtro
+    #     return context
 
     success_url = reverse_lazy('post_list') # Redirige a la lista de posts después de crear
 
@@ -81,6 +97,11 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView): # Req
     def test_func(self): # Solo permite al autor del post editarlo
         post = self.get_object()
         return self.request.user == post.autor
+    
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     context['categorias'] = Categoria.objects.all() # Pasar todas las categorías para el filtro
+    #     return context
 
     success_url = reverse_lazy('post_list')
 
@@ -99,6 +120,11 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView): # Req
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, '¡El post ha sido eliminado exitosamente!')
         return super().delete(request, *args, **kwargs)
+    
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     context['categorias'] = Categoria.objects.all() # Pasar todas las categorías para el filtro
+    #     return context
 
 # Vista para registrar nuevos usuarios
 class RegisterView(CreateView):
@@ -110,6 +136,93 @@ class RegisterView(CreateView):
         response = super().form_valid(form)
         messages.success(self.request, '¡Registro exitoso! Ya puedes iniciar sesión.')
         return response
+    
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     context['categorias'] = Categoria.objects.all() # Pasar todas las categorías para el filtro
+    #     return context
+    
+def about_view(request):
+    """
+    Vista para la página 'Acerca de'.
+    Proporciona información sobre el blog y su propósito.
+    """
+    return render(request,'blog/about.html')
+    
+def contact_view(request):
+    """
+    Vista para la página de contacto con un formulario.
+    """
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            nombre = form.cleaned_data['nombre']
+            correo = form.cleaned_data['correo']
+            asunto = form.cleaned_data['asunto']
+            mensaje = form.cleaned_data['mensaje']
+
+            # Construye el mensaje de correo
+            email_subject = f'Mensaje de Contacto del Blog: {asunto}'
+            email_message = f'De: {nombre} <{correo}>\n\n{mensaje}'
+
+            try:
+                send_mail(
+                    email_subject,
+                    email_message,
+                    settings.DEFAULT_FROM_EMAIL if hasattr(settings, 'DEFAULT_FROM_EMAIL') else 'noreply@example.com', # Remitente del correo
+                    ['johanna_contreras@hotmail.com'], # ¡CAMBIA ESTO! La dirección a la que quieres recibir los mensajes
+                    fail_silently=False,
+                )
+                messages.success(request, '¡Gracias! Tu mensaje ha sido enviado correctamente. Te responderemos pronto.')
+                return redirect('contact') # Redirige a la misma página para limpiar el formulario
+            except Exception as e:
+                messages.error(request, f'Hubo un error al enviar tu mensaje. Por favor, inténtalo de nuevo más tarde. ({e})')
+    else:
+        form = ContactForm() # Crea un formulario vacío para peticiones GET
+
+    context = {
+        'form': form,
+        'email_contacto': 'contacto@tu_blog.com', # ¡CAMBIA ESTO! Dirección de correo para mostrar
+        'instagram_link': 'https://www.instagram.com/tu_usuario_instagram/', # ¡CAMBIA ESTO!
+        'tiktok_link': 'https://www.tiktok.com/@tu_usuario_tiktok/', # ¡CAMBIA ESTO!
+    }
+    return render(request, 'blog/contact.html', context)
+
+
+def donations_view(request):
+    """
+    Vista para la página de donaciones, mostrando solo los datos de cuenta.
+    """
+    # Datos de la cuenta bancaria para mostrar
+    datos_cuenta = {
+        'banco': 'Banco Ejemplo S.A.',
+        'tipo_cuenta': 'Caja de Ahorro', # Opcional, si quieres incluirlo
+        'numero_cuenta': '1234-5678-90123456-789', # Número de cuenta completo
+        'alias_cbu': 'MI.BLOG.DONA',
+        'cbu': '0000000000000000000000', # 22 dígitos CBU
+        'cuil_titular': '20-12345678-9', # Alias del alias
+        'nombre_titular': 'Nombre de Tu Entidad/Persona',
+    }
+
+    # Crear el mensaje de WhatsApp
+    mensaje_whatsapp = (
+        f"¡Hola! Te comparto los datos de la cuenta para donaciones:\n\n"
+        f"🏦 Banco: {datos_cuenta['banco']}\n"
+        f"🔢 Número de Cuenta: {datos_cuenta['numero_cuenta']}\n"
+        f"✨ Alias: {datos_cuenta['alias_cbu']}\n"
+        f"🔗 CBU: {datos_cuenta['cbu']}\n"
+        f"🆔 CUIL: {datos_cuenta['cuil_titular']}\n"
+        f"👤 Titular: {datos_cuenta['nombre_titular']}\n\n"
+        f"¡Gracias por tu apoyo!"
+    )
+    # Codificar el mensaje para URL de WhatsApp
+    whatsapp_url = f"https://api.whatsapp.com/send?text={urllib.parse.quote(mensaje_whatsapp)}"
+
+    context = {
+        'datos_cuenta': datos_cuenta,
+        'whatsapp_url': whatsapp_url,
+    }
+    return render(request, 'blog/donations.html', context)   
 
 # Vista para añadir un comentario (usaremos una función simple por ahora)
 from django.http import JsonResponse
@@ -129,5 +242,9 @@ def add_comment(request, pk):
         messages.success(request, '¡Tu comentario ha sido añadido!')
         return JsonResponse({'status': 'success'})
     return JsonResponse({'status': 'error', 'message': 'El contenido del comentario no puede estar vacío.'}, status=400)
+
+
+
+
 # Create your views here.
 

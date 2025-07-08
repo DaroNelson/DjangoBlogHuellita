@@ -61,9 +61,11 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'blog.context_processors.categorias_globales', # ¡Esta línea es clave!
             ],
         },
     },
@@ -132,3 +134,6 @@ MEDIA_ROOT = BASE_DIR / 'media' # Crea una carpeta 'media' en la raíz de tu pro
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5" # Si usas Bootstrap 5
 CRISPY_TEMPLATE_PACK = "bootstrap5" # Si usas Bootstrap 5
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# Configuración de Correo Electrónico (para desarrollo) imprimirá los correos en la consola.
