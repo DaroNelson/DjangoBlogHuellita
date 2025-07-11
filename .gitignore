@@ -11,7 +11,7 @@ __pycache__/
 .Python/
 
 # Archivos de Django
-db.sqlite3
+#db.sqlite3
 *.log
 local_settings.py  # Si usan un archivo de settings local
 media/             # Si media files son generados por usuarios
