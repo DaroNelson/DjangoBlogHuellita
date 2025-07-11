@@ -1,0 +1,201 @@
+/* Navbar transparente y con blur */
+.navbar {
+    background-color: rgba(255,255,255,0.7) !important;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    transition: background 0.3s, box-shadow 0.3s;
+}
+
+body.dark-mode .navbar {
+    background-color: rgba(24,26,27,0.7) !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+}
+
+/* Contraste de enlaces en navbar transparente */
+.navbar .navbar-brand,
+.navbar .nav-link {
+    color: #212529 !important;
+    transition: color 0.3s;
+}
+
+body.dark-mode .navbar .navbar-brand,
+body.dark-mode .navbar .nav-link {
+    color: #fff !important;
+}
+
+/* Hover en enlaces de navbar */
+.navbar .nav-link:hover {
+    color: #0d6efd !important;
+    text-decoration: underline;
+}
+body.dark-mode .navbar .nav-link:hover {
+    color: #66afe9 !important;
+}
+
+/* Botones principales */
+.btn-primary {
+    background: linear-gradient(90deg, #0d6efd 60%, #0dcaf0 100%);
+    border: none;
+    color: #fff;
+    font-weight: 600;
+    transition: background 0.3s, color 0.3s;
+}
+.btn-primary:hover {
+    background: linear-gradient(90deg, #0dcaf0 0%, #0d6efd 100%);
+    color: #fff;
+}
+
+/* Tarjetas de posts */
+.card {
+    border-radius: 1rem;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+    border: none;
+    transition: box-shadow 0.3s;
+}
+.card:hover {
+    box-shadow: 0 4px 32px rgba(0,0,0,0.10);
+}
+
+/* Títulos destacados */
+h1, h2, h3, h4, h5 {
+    font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+    font-weight: 700;
+    letter-spacing: -1px;
+}
+
+/* Inputs y formularios */
+.form-control {
+    border-radius: 0.5rem;
+    border: 1px solid #ced4da;
+    transition: border 0.3s, box-shadow 0.3s;
+}
+.form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13,110,253,.10);
+}
+
+/* Mejoras en modo oscuro */
+body.dark-mode {
+    background-color: #181a1b;
+    color: #f8f9fa;
+}
+
+body.dark-mode .card {
+    background: #23272b;
+    color: #f8f9fa;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.25);
+}
+
+body.dark-mode .form-control {
+    background: #23272b;
+    color: #fff;
+    border: 1px solid #495057;
+}
+body.dark-mode .form-control:focus {
+    border-color: #66afe9;
+    box-shadow: 0 0 0 0.2rem rgba(102,175,233,.10);
+}
+
+/* Placeholder blanco en modo oscuro */
+body.dark-mode input::placeholder,
+body.dark-mode textarea::placeholder {
+    color: #ccc !important;
+    opacity: 1;
+}
+
+/* Botón para cambiar tema */
+#toggle-theme {
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+    background: #fff;
+    color: #212529;
+    border: none;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    transition: background 0.3s, color 0.3s;
+}
+body.dark-mode #toggle-theme {
+    background: #23272b;
+    color: #fff;
+}
+
+/* Formularios modernos */
+.form-container {
+    max-width: 420px;
+    margin: 40px auto;
+    padding: 2rem 2.5rem 2rem 2.5rem;
+    background: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    border: 1px solid #e3e3e3;
+}
+body.dark-mode .form-container {
+    background: #23272b;
+    border: 1px solid #343a40;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+}
+.form-container h2, .form-container h1 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+    color: #212529;
+}
+body.dark-mode .form-container h2,
+body.dark-mode .form-container h1 {
+    color: #fff;
+}
+
+/* Alertas */
+.alert {
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+body.dark-mode .alert {
+    color: #f8f9fa;
+    background-color: #23272b;
+    border-color: #343a40;
+}
+
+/* Mejoras en dropdown */
+.dropdown-menu {
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    background-color: #fff !important;
+    color: #212529;
+}
+body.dark-mode .dropdown-menu {
+    background-color: #23272b !important;
+    color: #f8f9fa;
+}
+body.dark-mode .dropdown-menu .dropdown-item {
+    color: #fff !important;
+}
+body.dark-mode .dropdown-menu .dropdown-item:hover,
+body.dark-mode .dropdown-menu .dropdown-item:focus {
+    background-color: #343a40 !important;
+    color: #fff !important;
+}
+
+/* Espaciado entre tarjetas de comentarios */
+#comments-section .card {
+    margin-bottom: 1rem;
+}
+
+/* Responsive para formularios y tarjetas */
+@media (max-width: 600px) {
+    .form-container {
+        padding: 1rem;
+        max-width: 98vw;
+    }
+    .card {
+        border-radius: 0.5rem;
+    }
+}
