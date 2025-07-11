@@ -1,0 +1,26 @@
+# Archivos de entorno virtual
+venv/
+.venv/
+env/
+
+# Archivos de Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python/
+
+# Archivos de Django
+db.sqlite3
+*.log
+local_settings.py  # Si usan un archivo de settings local
+media/             # Si media files son generados por usuarios
+static_collected/  # Si usan collectstatic
+
+# IDEs (Ej: VS Code, PyCharm)
+.vscode/
+.idea/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
