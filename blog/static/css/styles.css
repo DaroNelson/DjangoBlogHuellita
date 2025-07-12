@@ -498,6 +498,16 @@ h2, .h2 {
     font-weight: 600;
 }
 
+/* Alertas */
+.alert {
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border: none;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.04);
+}
+
 h3, .h3 { 
     font-size: var(--text-2xl); 
     font-weight: 600;
