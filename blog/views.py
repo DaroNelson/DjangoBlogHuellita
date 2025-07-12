@@ -3,7 +3,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View
 from .models import Post, Categoria, Comentario, Like
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages # Para mostrar mensajes al usuario
 from django.core.mail import send_mail # Importar para enviar correos
@@ -141,9 +141,9 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView): # Req
         messages.success(self.request, '¡Tu post ha sido actualizado exitosamente!')
         return super().form_valid(form)
 
-    def test_func(self): # Solo permite al autor del post editarlo
+    def test_func(self): # Permite al autor del post o al superusuario editarlo
         post = self.get_object()
-        return self.request.user == post.autor
+        return self.request.user == post.autor or self.request.user.is_superuser
     
     # def get_context_data(self, **kwargs):
     #     context = super().get_context_data(**kwargs)
@@ -392,6 +392,44 @@ def add_comment(request, pk):
     else: # Si la petición es GET a /post/<pk>/comment/, redirigimos al detalle del post
         return redirect('post_detail', pk=post.pk)    
 
+# Vista para editar comentarios
+class ComentarioUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Comentario
+    form_class = ComentarioForm
+    template_name = 'blog/comentario_edit.html'
+    context_object_name = 'comentario'
+    
+    def get_success_url(self):
+        # Redirige de vuelta al post después de editar
+        return reverse('post_detail', kwargs={'pk': self.object.post.pk})
+    
+    def test_func(self):
+        # Solo permite editar al autor del comentario o al admin
+        comentario = self.get_object()
+        return self.request.user == comentario.autor or self.request.user.is_superuser
+    
+    def form_valid(self, form):
+        messages.success(self.request, '¡Comentario actualizado exitosamente!')
+        return super().form_valid(form)
+
+# Vista para eliminar comentarios
+class ComentarioDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Comentario
+    template_name = 'blog/comentario_confirm_delete.html'
+    context_object_name = 'comentario'
+    
+    def get_success_url(self):
+        # Redirige de vuelta al post después de eliminar
+        return reverse('post_detail', kwargs={'pk': self.object.post.pk})
+    
+    def test_func(self):
+        # Solo permite eliminar al autor del comentario o al admin
+        comentario = self.get_object()
+        return self.request.user == comentario.autor or self.request.user.is_superuser
+    
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, '¡Comentario eliminado exitosamente!')
+        return super().delete(request, *args, **kwargs)
 
 # Create your views here.
 

@@ -2,7 +2,7 @@
 from django.urls import path
 from .views import (
     PostListView, PostDetailView, PostCreateView,
-    PostUpdateView, PostDeleteView, RegisterView, add_comment, about_view, contact_view, donations_view, CategoryOverviewView, like_post
+    PostUpdateView, PostDeleteView, RegisterView, add_comment, about_view, contact_view, donations_view, CategoryOverviewView, like_post, ComentarioUpdateView, ComentarioDeleteView
 )
 from django.contrib.auth import views as auth_views # Vistas de autenticación de Django
 
@@ -18,7 +18,8 @@ urlpatterns = [
     path('donaciones/', donations_view, name= 'donations'),
     path('categorias/', CategoryOverviewView.as_view(), name='category_overview'), # ¡Esta será la nueva página de inicio!
     path('post/<int:pk>/like/', like_post, name='like_post'),
-    
+    path('comentario/<int:pk>/editar/', ComentarioUpdateView.as_view(), name='comentario_edit'),
+    path('comentario/<int:pk>/eliminar/', ComentarioDeleteView.as_view(), name='comentario_delete'),
 
     # URLs de autenticación de Django
     path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
