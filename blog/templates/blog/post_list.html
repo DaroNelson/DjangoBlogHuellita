@@ -77,15 +77,22 @@
                 <img src="{{ post.imagen_portada.url }}" class="card-img-top" alt="{{ post.titulo }}" style="max-height: 250px; object-fit: cover;">
             {% endif %}
             <div class="card-body">
-                <h2 class="card-title"><a href="{% url 'post_detail' post.pk %}" class="text-dark text-decoration-none">{{ post.titulo }}</a></h2>
-                <p class="card-text text-muted">
-                    Por {{ post.autor.username }} el {{ post.fecha_publicacion|date:"d M, Y H:i" }}
-                    {% if post.categoria %}
-                        <span class="badge bg-info text-dark">{{ post.categoria.nombre }}</span>
-                    {% endif %}
-                </p>
-                <p class="card-text">{{ post.contenido|truncatechars:200 }}</p>
-                <a href="{% url 'post_detail' post.pk %}" class="btn btn-primary">Leer más &rarr;</a>
+                <h5 class="card-title"><a href="{{ post.get_absolute_url }}" class="text-decoration-none">{{ post.titulo }}</a></h5>
+                <p class="card-text">{{ post.contenido|truncatewords:30 }}</p>
+            </div>
+            <div class="card-footer text-muted d-flex justify-content-between align-items-center">
+                <div>
+                    <small>
+                        <i class="fas fa-calendar-alt me-1"></i>{{ post.fecha_publicacion|date:"d M Y" }} | 
+                        <i class="fas fa-user me-1"></i>{{ post.autor.username }}
+                    </small>
+                </div>
+                <div>
+                    <span class="like-count me-2">{{ post.likes.count }}</span>
+                    <a href="#" class="like-btn {% if user in post.likes.all %}liked{% endif %}" data-post-id="{{ post.id }}">
+                        <i class="fas fa-heart"></i>
+                    </a>
+                </div>
             </div>
         </div>
     {% empty %}
@@ -114,3 +121,30 @@
     {% endif %}
 
 {% endblock content %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Like button functionality
+    const likeButtons = document.querySelectorAll('.like-btn');
+    likeButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const postId = this.dataset.postId;
+            const likeCountSpan = this.previousElementSibling;
+            const icon = this.querySelector('i');
+
+            fetch(`/blog/like/${postId}/`)
+                .then(response => response.json())
+                .then(data => {
+                    likeCountSpan.textContent = data.likes_count;
+                    if (data.liked) {
+                        this.classList.add('liked');
+                    } else {
+                        this.classList.remove('liked');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    });
+});
+</script>
