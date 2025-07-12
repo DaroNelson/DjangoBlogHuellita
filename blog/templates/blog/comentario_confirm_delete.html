@@ -1,0 +1,23 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}Eliminar Comentario{% endblock %}
+
+{% block content %}
+
+    <div class="container mt-4">
+        <h3>🗑️ Eliminar Comentario</h3>
+        <div class="alert alert-warning">
+            ⚠️ ¿Estás seguro? Esta acción no se puede deshacer. El comentario será eliminado permanentemente.
+        </div>
+        <div class="mb-3">
+            <strong>{{ comentario.autor.username }}</strong> ~ {{ comentario.fecha_creacion|date:"d M, Y H:i" }}<br>
+            {{ comentario.contenido|linebreaksbr }}
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger me-2">🗑️ Sí, Eliminar</button>
+            <a href="{% url 'post_detail' comentario.post.pk %}" class="btn btn-secondary">❌ Cancelar</a>
+        </form>
+    </div>
+
+{% endblock %}
