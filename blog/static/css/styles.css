@@ -156,7 +156,7 @@ body.dark-mode .form-container h1 {
     padding: 1rem;
     margin-bottom: 1rem;
     border: none;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    box-shadow: 0 3px 8px rgba(0,0,0,0.04);
 }
 body.dark-mode .alert {
     color: #f8f9fa;
