@@ -1,97 +1,123 @@
 {% extends 'blog/base.html' %}
+{% load crispy_forms_tags %} {# Cargar crispy_forms si lo estás usando. Si no, puedes quitar esta línea. #}
+{% load static %} {# Cargar si usas archivos estáticos, como imágenes o CSS personalizados. #}
 
 {% block title %}{{ post.titulo }}{% endblock %}
 
 {% block content %}
-    <div class="card mb-4">
-        {% if post.imagen_portada %}
-            <img src="{{ post.imagen_portada.url }}" class="card-img-top" alt="{{ post.titulo }}" style="max-height: 400px; object-fit: cover;">
-        {% endif %}
-        <div class="card-body">
-            <h1 class="card-title">{{ post.titulo }}</h1>
-            <p class="card-text text-muted">
-                Por {{ post.autor.username }} el {{ post.fecha_publicacion|date:"d M, Y H:i" }}
-                {% if post.categoria %}
-                    <span class="badge bg-info text-dark">{{ post.categoria.nombre }}</span>
-                {% endif %}
+    <div class="row">
+        <div class="col-lg-8 offset-lg-2">
+            <h1 class="mt-4">{{ post.titulo }}</h1>
+            <p class="lead">
+                por <a href="#">{{ post.autor.username }}</a>
             </p>
-            <p class="card-text">{{ post.contenido|linebreaksbr }}</p> {# linebreaksbr convierte saltos de línea en <br> #}
+            <hr>
+            <p>Publicado el {{ post.fecha_publicacion|date:"d M, Y H:i" }}</p>
 
-            {% if user.is_authenticated and user == post.autor or user.is_superuser %}
-                <a href="{% url 'post_update' post.pk %}" class="btn btn-warning btn-sm me-2">Editar Post</a>
-                <a href="{% url 'post_delete' post.pk %}" class="btn btn-danger btn-sm">Eliminar Post</a>
+            {# Sección de Likes #}
+            <div class="mb-3 d-flex align-items-center">
+                {% if user.is_authenticated %}
+                    {# Usamos la variable 'user_has_liked' que se pasa desde la vista PostDetailView #}
+                    {% if user_has_liked %}
+                        <form action="{% url 'like_post' post.pk %}" method="post" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm me-2">
+                                <i class="bi bi-heart-fill"></i> Ya no me gusta
+                            </button>
+                        </form>
+                    {% else %}
+                        <form action="{% url 'like_post' post.pk %}" method="post" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-primary btn-sm me-2">
+                                <i class="bi bi-heart"></i> Me gusta
+                            </button>
+                        </form>
+                    {% endif %}
+                {% else %}
+                    {# Si el usuario no está autenticado, el botón está deshabilitado #}
+                    <button class="btn btn-outline-primary btn-sm me-2" disabled>
+                        <i class="bi bi-heart"></i> Me gusta
+                    </button>
+                    <small class="text-muted">Inicia sesión para dar Me Gusta</small>
+                {% endif %}
+
+                {# Conteo de Likes #}
+                <span class="badge bg-primary fs-6">{{ post.total_likes }}</span>
+                <span class="ms-2 text-muted">me gusta</span>
+            </div>
+
+            <hr>
+
+            {% if post.imagen_portada %}
+                <img class="img-fluid rounded" src="{{ post.imagen_portada.url }}" alt="{{ post.titulo }}">
+                <hr>
             {% endif %}
-        </div>
-    </div>
 
-    <hr>
+            {# Usamos |linebreaksbr para mostrar el contenido con saltos de línea. #}
+            {# Si tu 'contenido' puede tener HTML seguro (como de un editor WYSIWYG), usa |safe en su lugar. #}
+            <p>{{ post.contenido|linebreaksbr }}</p>
 
-    <h3 class="mb-3">Comentarios ({{ post.comentarios.count }})</h3>
-    {% if user.is_authenticated %}
-        <div class="card mb-4">
-            <div class="card-header">
-                Dejar un comentario
-            </div>
-            <div class="card-body">
-                <form id="comment-form">
-                    {% csrf_token %} {# ¡Importante para seguridad! #}
-                    <div class="mb-3">
-                        <textarea class="form-control" id="comment-content" rows="3" placeholder="Escribe tu comentario aquí..." required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-success">Publicar Comentario</button>
-                </form>
-            </div>
-        </div>
-    {% else %}
-        <p class="alert alert-info">Debes <a href="{% url 'login' %}">iniciar sesión</a> para poder comentar.</p>
-    {% endif %}
+            <hr>
 
-    <div id="comments-section">
-        {% for comentario in post.comentarios.all %}
-            <div class="card mb-3">
+            {# Sección de Comentarios #}
+            <div class="card my-4">
+                <h5 class="card-header">Deja un Comentario:</h5>
                 <div class="card-body">
-                    <h6 class="card-subtitle mb-2 text-muted">{{ comentario.autor.username }} - {{ comentario.fecha_creacion|date:"d M, Y H:i" }}</h6>
-                    <p class="card-text">{{ comentario.contenido }}</p>
+                    {% if user.is_authenticated %}
+                        <form id="comment-form" action="{% url 'add_comment_to_post' post.pk %}" method="post">
+                            {% csrf_token %} {# ¡Importante para seguridad! #}
+                            <div class="mb-3">
+                                {# Renderiza el campo 'contenido' del ComentarioForm. #}
+                                {# Si estás usando crispy_forms y lo tienes configurado, usa: #}
+                                {{ comment_form|crispy }}
+                                {# Si NO usas crispy_forms, usa esto en su lugar: #}
+                                {# {{ comment_form.contenido }} #}
+                                
+                                {# Muestra errores de campo específicos si los hay #}
+                                {% if comment_form.contenido.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {% for error in comment_form.contenido.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            {# Muestra errores no relacionados con campos si los hay (ej. errores generales del formulario) #}
+                            {% if comment_form.non_field_errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in comment_form.non_field_errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            <button type="submit" class="btn btn-success mt-3">Publicar Comentario</button>
+                        </form>
+                    {% else %}
+                        <p class="alert alert-info text-center">Debes <a href="{% url 'login' %}">iniciar sesión</a> para poder comentar.</p>
+                    {% endif %}
                 </div>
             </div>
-        {% empty %}
-            <p>Aún no hay comentarios. ¡Sé el primero en comentar!</p>
-        {% endfor %}
+
+            {# Lista de Comentarios Existentes #}
+            <h5 class="mt-5 mb-3">Comentarios ({{ post.comentarios.count }})</h5>
+            {% if post.comentarios.exists %}
+                <div id="comments-section">
+                    {# Ordenar por fecha_creacion si no está ya ordenado en el modelo Comentario Meta class #}
+                    {% for comentario in post.comentarios.all|dictsort:"fecha_creacion" %} 
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h6 class="card-subtitle mb-2 text-muted">
+                                    {{ comentario.autor.username }} ~ {{ comentario.fecha_creacion|date:"d M, Y H:i" }}
+                                </h6>
+                                <p class="card-text">{{ comentario.contenido|linebreaksbr }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-muted">Aún no hay comentarios. ¡Sé el primero en comentar!</p>
+            {% endif %}
+
+        </div>
     </div>
-
 {% endblock content %}
-
-{% block extra_js %}
-<script>
-    document.getElementById('comment-form').addEventListener('submit', function(event) {
-        event.preventDefault(); // Evita que el formulario se envíe de forma tradicional
-
-        const content = document.getElementById('comment-content').value;
-        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-
-        fetch('{% url "add_comment" post.pk %}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrfToken
-            },
-            body: JSON.stringify({ content: content })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                alert('Comentario añadido exitosamente!'); // Puedes usar una notificación más bonita
-                document.getElementById('comment-content').value = ''; // Limpia el textarea
-                // Recargar la página o agregar el comentario dinámicamente
-                location.reload(); // Por simplicidad, recargamos la página
-            } else {
-                alert('Error al añadir comentario: ' + data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Ocurrió un error al enviar el comentario.');
-        });
-    });
-</script>
-{% endblock %}

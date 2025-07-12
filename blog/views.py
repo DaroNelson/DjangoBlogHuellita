@@ -1,15 +1,16 @@
 # blog/views.py
 from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import Post, Categoria, Comentario
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View
+from .models import Post, Categoria, Comentario, Like
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
-from django.contrib.auth.forms import UserCreationForm # Para el registro
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages # Para mostrar mensajes al usuario
 from django.core.mail import send_mail # Importar para enviar correos
 from django.conf import settings # Importar para acceder a settings como EMAIL_HOST_USER
+#from django.http import JsonResponse # Posiblemente lo usaremos más adelante para Likes con AJAX
 
-from .forms import ContactForm # Impor formulario de contacto
+from .forms import ContactForm, ComentarioForm
 import urllib.parse #Whatsapp
 
 # Vista para la página principal (listar posts)
@@ -79,6 +80,26 @@ class PostDetailView(DetailView):
     model = Post
     template_name = 'blog/post_detail.html'
     context_object_name = 'post'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        # Pasa una nueva instancia del formulario de comentarios al contexto
+        context['comment_form'] = ComentarioForm()
+
+        # Lógica para verificar si el usuario actual le dio "Me gusta" al post
+        user_has_liked = False
+        if self.request.user.is_authenticated:
+            # Comprueba si existe un objeto Like para este post y el usuario autenticado
+            user_has_liked = Like.objects.filter(post=self.object, user=self.request.user).exists()
+        
+        context['user_has_liked'] = user_has_liked
+        
+        # Asegúrate de pasar las categorías globales si las necesitas en tu base.html o navbar
+        # (solo si no usas un context processor para ellas)
+        # context['categorias_globales'] = Categoria.objects.all() # Esto es redundante si ya tienes un context processor
+
+        return context
 
     # def get_context_data(self, **kwargs):
     #     context = super().get_context_data(**kwargs)
@@ -250,26 +271,126 @@ def donations_view(request):
     }
     return render(request, 'blog/donations.html', context)   
 
-# Vista para añadir un comentario (usaremos una función simple por ahora)
-from django.http import JsonResponse
-from django.views.decorators.http import require_POST
-from django.contrib.auth.decorators import login_required
-import json
+#probando agregar la vista de categorías
+class CategoryOverviewView(View):
+    """
+    Vista que muestra una página con todas las categorías y los últimos 4 posts de cada una.
+    """
+    template_name = 'blog/category_overview.html'
 
-@login_required # Solo usuarios logueados pueden comentar
-@require_POST # Solo acepta peticiones POST
+    def get(self, request, *args, **kwargs):
+        categorias = Categoria.objects.all().order_by('nombre') # Ordenar categorías por nombre
+
+        categories_data = []
+        for categoria in categorias:
+            # Obtener los últimos 4 posts para esta categoría
+            # Usamos select_related('autor', 'categoria') para optimizar las consultas a la base de datos
+            # cuando accedamos a post.autor.username o post.categoria.nombre en la plantilla.
+            # Prefetch_related('likes') para optimizar el conteo de likes si lo necesitas.
+            # Puedes ajustar el número de posts (4)
+            posts_for_category = Post.objects.filter(categoria=categoria).order_by('-fecha_publicacion')[:4]
+            
+            categories_data.append({
+                'category_object': categoria,
+                'posts': posts_for_category
+            })
+        
+        context = {
+            'categories_data': categories_data
+        }
+        return render(request, self.template_name, context)
+
+
+def like_post(request, pk):
+    """
+    Vista para manejar los 'Me gusta' de los posts.
+    Si el usuario ya dio like, lo remueve. Si no, lo añade.
+    Requiere que el usuario esté autenticado.
+    """
+    # Asegúrate de que el usuario esté autenticado
+    if not request.user.is_authenticated:
+        messages.warning(request, "Necesitas iniciar sesión para dar Me Gusta.")
+        return redirect('login') # Redirige a la página de login
+
+    post = get_object_or_404(Post, pk=pk)
+
+    # Verifica si el usuario ya le dio 'Me gusta' a este post
+    like_exists = Like.objects.filter(post=post, user=request.user).exists()
+
+    if like_exists:
+        # Si ya le dio 'Me gusta', lo quita (dislike)
+        Like.objects.filter(post=post, user=request.user).delete()
+        messages.info(request, f"Ya no te gusta '{post.titulo}'.")
+    else:
+        # Si no le dio 'Me gusta', lo añade (like)
+        Like.objects.create(post=post, user=request.user)
+        messages.success(request, f"¡Te gusta '{post.titulo}'!")
+
+    # Redirige de vuelta a la página de detalles del post (o de donde vino)
+    # Alternativamente, puedes redirigir a 'post_list' o la URL que desees
+    next_url = request.META.get('HTTP_REFERER') # Intenta volver a la página anterior
+    if next_url:
+        return redirect(next_url)
+    return redirect('post_detail', pk=pk) # Redirige a la página de detalles del post como fallback
+
+
+
+# Vista para añadir un comentario (usaremos una función simple por ahora)
+# from django.http import JsonResponse
+# from django.views.decorators.http import require_POST
+# from django.contrib.auth.decorators import login_required
+# import json
+
+# @login_required # Solo usuarios logueados pueden comentar
+# @require_POST # Solo acepta peticiones POST
+# def add_comment(request, pk):
+#     post = get_object_or_404(Post, pk=pk)
+#     data = json.loads(request.body)
+#     content = data.get('content')
+
+#     if content:
+#         Comentario.objects.create(post=post, autor=request.user, contenido=content)
+#         messages.success(request, '¡Tu comentario ha sido añadido!')
+#         return JsonResponse({'status': 'success'})
+#     return JsonResponse({'status': 'error', 'message': 'El contenido del comentario no puede estar vacío.'}, status=400)
+
+
 def add_comment(request, pk):
     post = get_object_or_404(Post, pk=pk)
-    data = json.loads(request.body)
-    content = data.get('content')
 
-    if content:
-        Comentario.objects.create(post=post, autor=request.user, contenido=content)
-        messages.success(request, '¡Tu comentario ha sido añadido!')
-        return JsonResponse({'status': 'success'})
-    return JsonResponse({'status': 'error', 'message': 'El contenido del comentario no puede estar vacío.'}, status=400)
+    # 1. Seguridad: Asegurarse de que el usuario esté autenticado
+    if not request.user.is_authenticated:
+        messages.warning(request, "Necesitas iniciar sesión para dejar un comentario.")
+        return redirect('login') # Redirige al login
 
+    # 2. Verificar que la petición sea POST (un envío de formulario)
+    if request.method == 'POST':
+        # Instancia el formulario con los datos recibidos de request.POST
+        # Y NO json.loads(request.body)
+        form = ComentarioForm(request.POST)
 
+        if form.is_valid():
+            # No guardamos directamente, commit=False para asignar el post y autor
+            comment = form.save(commit=False)
+            comment.post = post
+            comment.autor = request.user # Asigna el usuario autenticado como autor
+            comment.save() # Ahora sí guarda el comentario completo
+            messages.success(request, '¡Tu comentario ha sido publicado!')
+            return redirect('post_detail', pk=post.pk) # Redirige de vuelta a la página del post
+        else:
+            # Si el formulario no es válido, agrega un mensaje de error
+            messages.error(request, 'Hubo un error al enviar tu comentario. Por favor, revisa los campos.')
+            # Es importante redirigir al post_detail para mostrar los mensajes.
+            # Idealmente, deberías renderizar la página de detalle con el formulario inválido
+            # para que los errores de validación del formulario se muestren al usuario.
+            # Para que esto funcione, post_detail.html debe ser capaz de recibir un `comment_form`
+            # con errores.
+            # Si tu `PostDetailView` es una Class-Based View, necesitarás sobrescribir su `get_context_data`
+            # para pasar el formulario, o hacer una lógica más compleja de redirección con parámetros.
+            # Por ahora, simplemente redirigimos y confiamos en los mensajes flash.
+            return redirect('post_detail', pk=post.pk)
+    else: # Si la petición es GET a /post/<pk>/comment/, redirigimos al detalle del post
+        return redirect('post_detail', pk=post.pk)    
 
 
 # Create your views here.

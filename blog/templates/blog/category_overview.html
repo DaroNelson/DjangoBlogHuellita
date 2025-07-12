@@ -1,0 +1,68 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}Explorar Categorías{% endblock %}
+
+{% block content %}
+    <h1 class="mb-5 text-center">Explorar Nuestro Blog por Categoría</h1>
+
+    {% for category_data in categories_data %}
+        <div class="category-section mb-5 p-4 rounded shadow-sm border">
+            <h2 class="mb-3">
+                <a href="{% url 'post_list' %}?categoria={{ category_data.category_object.nombre }}" class="text-decoration-none text-primary">
+                    {{ category_data.category_object.nombre }}
+                </a>
+            </h2>
+            {% if category_data.category_object.descripcion %}
+                <p class="lead text-muted">{{ category_data.category_object.descripcion }}</p>
+            {% else %}
+                <p class="lead text-muted">No hay descripción disponible para esta categoría.</p>
+            {% endif %}
+
+            <hr class="my-4">
+
+            <h4 class="mb-3">Últimos Posts en {{ category_data.category_object.nombre }}</h4>
+            {% if category_data.posts %}
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4"> {# Grid de 4 columnas para los posts #}
+                    {% for post in category_data.posts %}
+                        <div class="col">
+                            <div class="card h-100 shadow-sm">
+                                {% if post.imagen_portada %}
+                                    <img src="{{ post.imagen_portada.url }}" class="card-img-top" alt="{{ post.titulo }}" style="height: 150px; object-fit: cover;">
+                                {% endif %}
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title"><a href="{% url 'post_detail' post.pk %}" class="text-dark text-decoration-none">{{ post.titulo|truncatechars:50 }}</a></h5>
+                                    <p class="card-text text-muted small mb-auto">
+                                        Por {{ post.autor.username }} el {{ post.fecha_publicacion|date:"d M, Y" }}
+                                    </p>
+                                    <div class="mt-2">
+                                        <span class="badge bg-primary me-1">
+                                            <i class="bi bi-heart-fill"></i> {{ post.total_likes }}
+                                        </span>
+                                        <span class="badge bg-secondary">
+                                            <i class="bi bi-chat-dots-fill"></i> {{ post.comentarios.count }}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="card-footer bg-white border-top-0 pt-0">
+                                    <a href="{% url 'post_detail' post.pk %}" class="btn btn-sm btn-outline-primary w-100">Leer más</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="text-center mt-4">
+                    <a href="{% url 'post_list' %}?categoria={{ category_data.category_object.nombre }}" class="btn btn-outline-dark">
+                        Ver todos los posts de {{ category_data.category_object.nombre }} &rarr;
+                    </a>
+                </div>
+            {% else %}
+                <p class="text-muted">No hay posts aún en esta categoría. ¡Sé el primero en publicar uno!</p>
+            {% endif %}
+        </div>
+    {% empty %}
+        <div class="alert alert-info text-center" role="alert">
+            No hay categorías disponibles en este momento.
+        </div>
+    {% endfor %}
+
+{% endblock %}
