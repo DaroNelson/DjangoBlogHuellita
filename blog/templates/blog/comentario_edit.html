@@ -1,0 +1,24 @@
+{% extends 'blog/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Editar Comentario{% endblock %}
+
+{% block content %}
+
+    
+        
+            
+                ✏️ Editar Comentario
+            
+            
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <button type="submit" class="btn btn-success me-2">💾 Guardar Cambios</button>
+                    <a href="{% url 'post_detail' comentario.post.pk %}" class="btn btn-danger">❌ Cancelar</a>
+                </form>
+            
+        
+    
+
+{% endblock %}

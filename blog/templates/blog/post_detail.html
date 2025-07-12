@@ -11,6 +11,14 @@
             <p class="lead">
                 por <a href="#">{{ post.autor.username }}</a>
             </p>
+
+            {# Opciones de Editar/Eliminar para el autor o el admin #}
+            {% if user.is_authenticated and user == post.autor or user.is_superuser %}
+                <div class="mb-3">
+                    <a href="{% url 'post_update' post.pk %}" class="btn btn-sm btn-warning me-2">✏️ Editar Post</a>
+                    <a href="{% url 'post_delete' post.pk %}" class="btn btn-sm btn-danger">🗑️ Eliminar Post</a>
+                </div>
+            {% endif %}
             <hr>
             <p>Publicado el {{ post.fecha_publicacion|date:"d M, Y H:i" }}</p>
 
@@ -99,24 +107,46 @@
             </div>
 
             {# Lista de Comentarios Existentes #}
-            <h5 class="mt-5 mb-3">Comentarios ({{ post.comentarios.count }})</h5>
-            {% if post.comentarios.exists %}
-                <div id="comments-section">
-                    {# Ordenar por fecha_creacion si no está ya ordenado en el modelo Comentario Meta class #}
-                    {% for comentario in post.comentarios.all|dictsort:"fecha_creacion" %} 
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <h6 class="card-subtitle mb-2 text-muted">
-                                    {{ comentario.autor.username }} ~ {{ comentario.fecha_creacion|date:"d M, Y H:i" }}
-                                </h6>
-                                <p class="card-text">{{ comentario.contenido|linebreaksbr }}</p>
+                    Comentarios ({{ post.comentarios.count }})
+                    {% if post.comentarios.exists %}
+    
+                        {% for comentario in post.comentarios.all %}
+            
+                
+                    
+                        
+                            
+                                {{ comentario.autor.username }} ~ {{ comentario.fecha_creacion|date:"d M, Y H:i" }}
+                            
+                            {{ comentario.contenido|linebreaksbr }}
+                        
+                        
+                        {# Botones de Editar y Eliminar #}
+
+                        {% if user.is_authenticated and user == comentario.autor or user.is_superuser %}
+                            <div class="mt-2">
+                                <a href="{% url 'comentario_edit' comentario.pk %}" class="btn btn-sm btn-warning me-2">
+                                    ✏️ Editar
+                                </a>
+                                <a href="{% url 'comentario_delete' comentario.pk %}" class="btn btn-sm btn-danger">
+                                    🗑️ Eliminar
+                                </a>
                             </div>
-                        </div>
+                        {% endif %}
+                    
+                
+            
                     {% endfor %}
-                </div>
-            {% else %}
-                <p class="text-muted">Aún no hay comentarios. ¡Sé el primero en comentar!</p>
-            {% endif %}
+    
+                {% else %}
+                Aún no hay comentarios. ¡Sé el primero en comentar!
+                {% endif %}
+            
+
+
+
+
+
 
         </div>
     </div>
