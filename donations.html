@@ -1,0 +1,78 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}Donaciones{% endblock %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-lg-8 offset-lg-2">
+            <h1 class="mb-4 text-center">Ayudanos a seguir ayudando</h1>
+            <p class="lead text-center">
+                Cada donación, por mínima que sea, nos permite comprar alimento, medicamentos, pagar castraciones, traslados y emergencias veterinarias. No recibimos subsidios del Estado, todo se sostiene gracias a personas como vos, que eligen marcar la diferencia. Podés colaborar con transferencias, donando insumos o sumándote a campañas. ¡Tu aporte salva vidas!
+              </p>
+
+            <hr class="my-4">
+
+            <div class="card card-body shadow-sm mb-4">
+                <h3 class="card-title text-center mb-3">Datos para Transferencia Bancaria</h3>
+                <dl class="row mb-3">
+                    <dt class="col-sm-4 text-end">Banco:</dt>
+                    <dd class="col-sm-8 fw-bold" id="bankName">{{ datos_cuenta.banco }} </dd>
+
+                    {% if datos_cuenta.tipo_cuenta %} {# Opcional: solo muestra si existe #}
+                    <dt class="col-sm-4 text-end">Tipo de Cuenta:</dt>
+                    <dd class="col-sm-8" id="accountType">{{ datos_cuenta.tipo_cuenta }} </dd>
+                    {% endif %}
+
+                    <dt class="col-sm-4 text-end">Número de Cuenta:</dt>
+                    <dd class="col-sm-8 fw-bold" id="accountNumber">{{ datos_cuenta.numero_cuenta }} <button class="btn btn-sm btn-outline-secondary ms-2" onclick="copyToClipboard('accountNumber')">Copiar</button></dd>
+
+                    <dt class="col-sm-4 text-end">Alias:</dt>
+                    <dd class="col-sm-8 fw-bold" id="aliasCbu">{{ datos_cuenta.alias_cbu }} <button class="btn btn-sm btn-outline-secondary ms-2" onclick="copyToClipboard('aliasCbu')">Copiar</button></dd>
+
+                    <dt class="col-sm-4 text-end">CBU:</dt>
+                    <dd class="col-sm-8 fw-bold" id="cbuNumber">{{ datos_cuenta.cbu }} <button class="btn btn-sm btn-outline-secondary ms-2" onclick="copyToClipboard('cbuNumber')">Copiar</button></dd>
+
+                    <dt class="col-sm-4 text-end">CUIL del Titular:</dt>
+                    <dd class="col-sm-8 fw-bold" id="cuilHolder">{{ datos_cuenta.cuil_titular }} <button class="btn btn-sm btn-outline-secondary ms-2" onclick="copyToClipboard('cuilHolder')">Copiar</button></dd>
+
+                    <dt class="col-sm-4 text-end">Nombre del Titular:</dt>
+                    <dd class="col-sm-8 fw-bold" id="accountHolderName">{{ datos_cuenta.nombre_titular }} </dd>
+                </dl>
+                <div class="text-center mt-4">
+                    <a href="{{ whatsapp_url }}" target="_blank" class="btn btn-success btn-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-whatsapp me-2" viewBox="0 0 16 16">
+                            <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.542.068 7.927c0 1.354.394 2.639 1.092 3.79L.05 15.903l4.524-1.489A7.681 7.681 0 0 0 7.994 15.8c4.366 0 7.92-3.542 7.92-7.927 0-2.343-1.008-4.457-2.766-5.992zm-2.722 7.375c-.247-.075-.68-.347-.98-.493-.299-.147-.515-.22-.731-.22-.216 0-.569.22-.69.37-.119.15-.246.37-.493.493-.247.146-.494.074-.91-.22-.416-.297-1.176-.98-1.748-1.897-.478-.767-.715-1.176-.715-1.442 0-.276.024-.52.12-.725.096-.205.216-.494.32-.69.105-.196.105-.37-.052-.515-.158-.146-.493-.37-.66-.445-.166-.075-.382-.061-.58-.061-.196 0-.515-.005-.788.6-.273.605-1.125 1.554-1.125 3.033 0 1.478 1.15 2.875 1.317 3.09.166.216 2.36 3.632 5.618 4.962.296.121.58.19.882.19.493 0 .953-.183 1.307-.37.353-.186.64-.445.834-.69.194-.246.353-.493.493-.69.143-.195.27-.37.407-.446.136-.075.297-.115.514-.04zm-3.085 1.78a5.534 5.534 0 0 1-.776-.231c-.333-.146-2.065-.89-2.398-1.026-.146-.057-.333-.08-.506.057-.173.138-.382.4-.515.548-.133.146-.26.165-.4.074-.14-.09-.594-.22-1.134-.69-.54-.47-1.023-1.17-1.356-1.748-.28-.485-.316-.62-.057-.74.258-.119.57-.26.794-.485.224-.225.3-.494.407-.65.106-.156.05-.29-.028-.407-.075-.119-.687-.82-1.008-1.553-.32-.733-.357-.63-.5-.644-.146-.014-.316-.025-.494-.025-.178 0-.416.062-.62.316-.204.254-.537.527-.537 1.287 0 .76.537 1.47 1.124 2.152.587.682 1.15 1.48 1.848 2.01.698.532 1.346.726 1.78.854.433.128.89.057 1.223-.09.333-.146.793-.37 1.125-.595.333-.224.57-.494.707-.65.137-.156.29-.297.433-.37zm-3.085 1.78z"/>
+                        </svg>
+                        Compartir Datos por WhatsApp
+                    </a>
+                </div>
+            </div>
+
+            <p class="text-center mt-5">
+                ¡Gracias de antemano por tu generosidad! Tu apoyo es la clave para seguir creciendo.
+            </p>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script>
+        function copyToClipboard(elementId) {
+            const textToCopy = document.getElementById(elementId).textContent.trim();
+            // Eliminar el texto "Copiar" del final si está presente
+            const copyButtonText = document.querySelector(`#${elementId} button.btn-outline-secondary`)?.textContent;
+            let finalString = textToCopy;
+            if (copyButtonText && textToCopy.endsWith(copyButtonText)) {
+                finalString = textToCopy.slice(0, -copyButtonText.length).trim();
+            }
+
+            navigator.clipboard.writeText(finalString).then(() => {
+                alert('¡Copiado al portapapeles!');
+            }).catch(err => {
+                console.error('Error al copiar: ', err);
+                alert('Error al copiar. Por favor, copia manualmente.');
+            });
+        }
+    </script>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends 'blog/base.html' %}
+{% load crispy_forms_tags %} {# Para que el formulario se vea bien #}
+
+{% block title %}Contacto{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-lg-8 offset-lg-2">
+            <h1 class="mb-4">¿Querés sumar tu granito de amor?</h1>
+            <p class="lead">
+                Si estás pensando en adoptar, ser hogar de tránsito, ayudar con una donación o simplemente tenés dudas o ideas para compartir, este es el lugar. En Huellitas creemos en el poder de los vínculos, y cada mensaje que recibimos nos acerca un poco más a cambiarle la vida a un animal.
+
+¡Escribinos! Tu voz también es parte de esta red que rescata, cuida y ama.
+            </p>
+
+            <hr class="my-4">
+
+            <h3>Envíanos un Mensaje</h3>
+            <div class="card card-body mb-4">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <button type="submit" class="btn btn-primary mt-3">Enviar Mensaje</button>
+                </form>
+            </div>
+
+            <hr class="my-4">
+
+            <h3>Otra Formas de Contacto</h3>
+            <p>
+                También puedes escribirnos directamente a nuestro correo electrónico:
+                <br>
+                <strong>Email:</strong> <a href="mailto:{{ email_contacto }}">{{ email_contacto }}</a>
+            </p>
+
+            <p>
+                Síguenos en nuestras redes sociales:
+                <br>
+                <strong>Instagram:</strong> <a href="{{ instagram_link }}" target="_blank">@HuellitasDeAmor</a>
+                <br>
+                <strong>TikTok:</strong> <a href="{{ tiktok_link }}" target="_blank">@huellitas_Amor</a>
+            </p>
+        </div>
+    </div>
+{% endblock %}
