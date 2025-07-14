@@ -205,7 +205,7 @@ body.dark-mode .navbar .nav-link:hover {
 
 /* Botón warning mejorado - Editar Post */
 .btn-warning {
-    background: linear-gradient(135deg, #f39c12, #e67e22) !important;
+    background: linear-gradient(135deg, #d9e713, #e67e22) !important;
     border: none !important;
     color: #fff !important;
     font-weight: 600 !important;

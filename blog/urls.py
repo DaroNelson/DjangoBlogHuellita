@@ -2,7 +2,7 @@
 from django.urls import path
 from .views import (
     PostListView, PostDetailView, PostCreateView,
-    PostUpdateView, PostDeleteView, RegisterView, add_comment, about_view, contact_view, donations_view, CategoryOverviewView, like_post, ComentarioUpdateView, ComentarioDeleteView
+    PostUpdateView, PostDeleteView, RegisterView, add_comment, about_view, contact_view, donations_view, CategoryOverviewView, CategoryDetailView, like_post, ComentarioUpdateView, ComentarioDeleteView
 )
 from django.contrib.auth import views as auth_views # Vistas de autenticación de Django
 
@@ -17,6 +17,7 @@ urlpatterns = [
     path('contacto/', contact_view, name='contact'),
     path('donaciones/', donations_view, name= 'donations'),
     path('categorias/', CategoryOverviewView.as_view(), name='category_overview'), # ¡Esta será la nueva página de inicio!
+    path('categoria/<int:pk>/', CategoryDetailView.as_view(), name='category_detail'), # Nueva URL para categorías específicas
     path('post/<int:pk>/like/', like_post, name='like_post'),
     path('comentario/<int:pk>/editar/', ComentarioUpdateView.as_view(), name='comentario_edit'),
     path('comentario/<int:pk>/eliminar/', ComentarioDeleteView.as_view(), name='comentario_delete'),

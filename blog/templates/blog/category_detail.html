@@ -1,0 +1,153 @@
+{% extends 'blog/base.html' %}
+{% load static %}
+
+{% block title %}{{ categoria.nombre }} - Huellitas{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <!-- Header de la categoría -->
+        <div class="card card-body mb-4 text-center">
+            <h1 class="display-5 mb-3">
+                <i class="fas fa-tag me-2 text-primary"></i>{{ categoria.nombre }}
+            </h1>
+            {% if categoria.descripcion %}
+                <p class="lead text-muted">{{ categoria.descripcion }}</p>
+            {% endif %}
+            <div class="row text-center mt-3">
+                <div class="col">
+                    <h5 class="text-primary">{{ total_posts }}</h5>
+                    <small class="text-muted">Posts en esta categoría</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Posts de la categoría -->
+        {% if posts %}
+            <div class="row">
+                {% for post in posts %}
+                    <div class="col-md-6 mb-4">
+                        <div class="card post-card h-100">
+                            {% if post.imagen_portada %}
+                                <div class="card-img-container">
+                                    <img src="{{ post.imagen_portada.url }}" class="card-img-top" alt="{{ post.titulo }}" style="height: 200px; object-fit: cover;">
+                                </div>
+                            {% endif %}
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title">
+                                    <a href="{{ post.get_absolute_url }}" class="text-decoration-none">{{ post.titulo }}</a>
+                                </h5>
+                                <p class="card-text">{{ post.contenido|truncatewords:20 }}</p>
+                                <div class="card-footer text-muted d-flex justify-content-between align-items-center mt-auto">
+                                    <div>
+                                        <small>
+                                            <i class="fas fa-calendar-alt me-1"></i>{{ post.fecha_publicacion|date:"d M Y" }} | 
+                                            <i class="fas fa-user me-1"></i>{{ post.autor.username }}
+                                        </small>
+                                    </div>
+                                    <div>
+                                        <span class="like-count me-2">{{ post.likes.count }}</span>
+                                        <a href="#" class="like-btn {% if user in post.likes.all %}liked{% endif %}" data-post-id="{{ post.pk }}">
+                                            <i class="fas fa-heart"></i>
+                                        </a>
+                                        <a href="{{ post.get_absolute_url }}" class="btn btn-primary btn-sm ms-2">Leer más</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Paginación -->
+            {% if is_paginated %}
+                <nav aria-label="Navegación de páginas">
+                    <ul class="pagination justify-content-center">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page=1">&laquo; Primera</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a>
+                            </li>
+                        {% endif %}
+
+                        <li class="page-item active">
+                            <span class="page-link">
+                                Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+                            </span>
+                        </li>
+
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}">Siguiente</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Última &raquo;</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+
+        {% else %}
+            <!-- Sin posts -->
+            <div class="card card-body text-center">
+                <div class="py-5">
+                    <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                    <h3 class="text-muted">No hay posts en esta categoría</h3>
+                    <p class="text-muted">Aún no se han publicado posts en la categoría "{{ categoria.nombre }}".</p>
+                    <a href="{% url 'post_list' %}" class="btn btn-primary">
+                        <i class="fas fa-arrow-left me-1"></i>Volver al inicio
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Botón de navegación -->
+        <div class="text-center mt-4">
+            <a href="{% url 'category_overview' %}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-1"></i>Ver todas las categorías
+            </a>
+            <a href="{% url 'post_list' %}" class="btn btn-outline-primary ms-2">
+                <i class="fas fa-home me-1"></i>Ir al inicio
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Like button functionality
+    const likeButtons = document.querySelectorAll('.like-btn');
+    likeButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const postId = this.getAttribute('data-post-id');
+            
+            fetch(`/post/${postId}/like/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                const likeCount = this.parentElement.querySelector('.like-count');
+                likeCount.textContent = data.total_likes;
+                
+                if (data.liked) {
+                    this.classList.add('liked');
+                } else {
+                    this.classList.remove('liked');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    });
+});
+</script>
+{% endblock content %}

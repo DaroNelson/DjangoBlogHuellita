@@ -431,5 +431,22 @@ class ComentarioDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         messages.success(self.request, '¡Comentario eliminado exitosamente!')
         return super().delete(request, *args, **kwargs)
 
+# Vista para mostrar posts por categoría
+class CategoryDetailView(ListView):
+    model = Post
+    template_name = 'blog/category_detail.html'
+    context_object_name = 'posts'
+    paginate_by = 6
+    
+    def get_queryset(self):
+        self.categoria = get_object_or_404(Categoria, pk=self.kwargs['pk'])
+        return Post.objects.filter(categoria=self.categoria).order_by('-fecha_publicacion')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categoria'] = self.categoria
+        context['total_posts'] = self.get_queryset().count()
+        return context
+
 # Create your views here.
 
