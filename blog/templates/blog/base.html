@@ -13,7 +13,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Huellitas{% endblock %}</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Bootstrap & FontAwesome -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
     <style>
         body { 
@@ -22,82 +28,68 @@
     </style>
 </head>
 <body>
+    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="{% url 'post_list' %}">Huellitas</a>
+            <a class="navbar-brand" href="{% url 'post_list' %}">
+                <i class="fas fa-paw me-2"></i>Huellitas
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
+                <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'category_overview' %}">Blog</a> 
+                        <a class="nav-link {% if request.resolver_match.url_name == 'post_list' %}active{% endif %}" href="{% url 'post_list' %}"><i class="fas fa-home me-1"></i>Inicio</a>
                     </li>
-                    
-                    {# NUEVO: Menú desplegable de Categorías #}
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownCategorias" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Categorías
+                        <a class="nav-link dropdown-toggle" href="#" id="categoriasDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-tags me-1"></i>Categorías
                         </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownCategorias">
-                            <li><a class="dropdown-item" href="{% url 'category_overview' %}">Todas las Categorías</a></li>
+                        <ul class="dropdown-menu" aria-labelledby="categoriasDropdown">
+                            <li><a class="dropdown-item" href="{% url 'category_overview' %}">Todas las categorías</a></li>
                             <li><hr class="dropdown-divider"></li>
                             {% for categoria in categorias %}
-                                <li><a class="dropdown-item" href="{% url 'post_list' %}?categoria={{ categoria.nombre }}">{{ categoria.nombre }}</a></li>
+                                <li><a class="dropdown-item" href="{{ categoria.get_absolute_url }}">{{ categoria.nombre }}</a></li>
                             {% endfor %}
                         </ul>
                     </li>
-                    {# FIN NUEVO #}
-
-                    {# NUEVO: Enlace a la sección "Acerca de" #}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'about' %}">Acerca de</a>
+                        <a class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}" href="{% url 'about' %}"><i class="fas fa-info-circle me-1"></i>Acerca de</a>
                     </li>
-                    {# FIN NUEVO: Enlace a la sección "Acerca de" #}
-
-                    {# NUEVO: Enlace a la sección "Contacto" #}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'contact' %}">Contacto</a>
+                        <a class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}" href="{% url 'contact' %}"><i class="fas fa-envelope me-1"></i>Contacto</a>
                     </li>
-                    {# NUEVO: Enlace a la sección "Donaciones" #}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'donations' %}">Donaciones</a>
+                        <a class="nav-link {% if request.resolver_match.url_name == 'donations' %}active{% endif %}" href="{% url 'donations' %}"><i class="fas fa-heart me-1"></i>Donaciones</a>
                     </li>
-
                     {% if user.is_authenticated %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'post_create' %}">Crear Post</a>
-                    </li>
-                    {% endif %}
-
-                    
-
-
-
-
-                </ul>
-                <ul class="navbar-nav">
-                    {% if user.is_authenticated %}
-                        <li class="nav-item">
-                            <span class="nav-link text-white">Hola, {{ user.username }}</span>
-                        </li>
-                        <li class="nav-item">
-                            <form action="{% url 'logout' %}" method="post" class="d-inline">
-                                {% csrf_token %} {# ¡MUY IMPORTANTE para la seguridad! #}
-                                <button type="submit" class="btn btn-dark">Cerrar Sesión</button>
-                            </form>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-user-circle me-1"></i>{{ user.username }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="{% url 'post_create' %}"><i class="fas fa-plus-circle me-1"></i>Crear Post</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form action="{% url 'logout' %}" method="post" class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="dropdown-item text-danger"><i class="fas fa-sign-out-alt me-1"></i>Cerrar Sesión</button>
+                                    </form>
+                                </li>
+                            </ul>
                         </li>
                     {% else %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'login' %}">Iniciar Sesión</a>
+                            <a class="nav-link" href="{% url 'login' %}"><i class="fas fa-sign-in-alt me-1"></i>Iniciar Sesión</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'register' %}">Registrarse</a>
+                            <a class="nav-link" href="{% url 'register' %}"><i class="fas fa-user-plus me-1"></i>Registrarse</a>
                         </li>
                     {% endif %}
-                    <li class="nav-item">
-                        <button id="toggle-theme" class="btn" aria-label="Cambiar tema">
-                            🌙
+                    <li class="nav-item ms-lg-2">
+                        <button id="toggle-theme" class="btn btn-outline-secondary rounded-circle" type="button">
+                            <i class="fas fa-moon"></i>
                         </button>
                     </li>
                 </ul>
@@ -105,7 +97,7 @@
         </div>
     </nav>
 
-    <div class="container mt-4">
+    <main class="container mt-5 pt-4">
         {% if messages %}
             {% for message in messages %}
                 <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
@@ -117,38 +109,43 @@
 
         {% block content %}
         {% endblock content %}
-    </div>
+    </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Script para cambiar entre modo claro y oscuro
         document.addEventListener('DOMContentLoaded', function() {
+            // Navbar scroll effect
+            const navbar = document.querySelector('.navbar');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            });
+
+            // Dark/Light mode toggle
             const toggleButton = document.getElementById('toggle-theme');
             const body = document.body;
-            
-            // Verificar si hay un tema guardado en localStorage
+            const icon = toggleButton.querySelector('i');
+
             const savedTheme = localStorage.getItem('theme');
             if (savedTheme === 'dark') {
                 body.classList.add('dark-mode');
-                toggleButton.textContent = '☀️';
-            } else {
-                toggleButton.textContent = '🌙';
+                icon.classList.replace('fa-moon', 'fa-sun');
             }
-            
-            // Agregar evento al botón
+
             toggleButton.addEventListener('click', function() {
                 body.classList.toggle('dark-mode');
-                
                 if (body.classList.contains('dark-mode')) {
-                    toggleButton.textContent = '☀️';
                     localStorage.setItem('theme', 'dark');
+                    icon.classList.replace('fa-moon', 'fa-sun');
                 } else {
-                    toggleButton.textContent = '🌙';
                     localStorage.setItem('theme', 'light');
+                    icon.classList.replace('fa-sun', 'fa-moon');
                 }
             });
         });
     </script>
-    {% block extra_js %}{% endblock %}
 </body>
 </html>
