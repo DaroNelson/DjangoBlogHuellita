@@ -2,9 +2,7 @@
 {% load i18n %}
 {% load crispy_forms_tags %}
 
-{# NUEVO: Cargar las categorías para el menú desplegable #}
-{% with categorias=categories.all %}{% endwith %}
-{# FIN NUEVO #}
+{# Las categorías se cargan automáticamente via context processor #}
 
 {# Base template for the blog application #}
 <!DOCTYPE html>
