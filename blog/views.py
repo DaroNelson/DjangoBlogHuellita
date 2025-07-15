@@ -4,13 +4,14 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from .models import Post, Categoria, Comentario, Like
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy, reverse
-from django.contrib.auth.forms import UserCreationForm
+#from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages # Para mostrar mensajes al usuario
 from django.core.mail import send_mail # Importar para enviar correos
 from django.conf import settings # Importar para acceder a settings como EMAIL_HOST_USER
 #from django.http import JsonResponse # Posiblemente lo usaremos más adelante para Likes con AJAX
 
-from .forms import ContactForm, ComentarioForm
+
+from .forms import ContactForm, ComentarioForm, CustomUserCreationForm # Importa tu nuevo formulario
 import urllib.parse #Whatsapp
 
 # Vista para la página principal (listar posts)
@@ -175,9 +176,9 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView): # Req
 
 # Vista para registrar nuevos usuarios
 class RegisterView(CreateView):
-    form_class = UserCreationForm
+    form_class = CustomUserCreationForm # ¡ASEGÚRATE DE QUE ESTA LÍNEA USE CustomUserCreationForm!
     template_name = 'registration/register.html'
-    success_url = reverse_lazy('login') # Redirige a la página de login después del registro
+    success_url = reverse_lazy('login')
 
     def form_valid(self, form):
         response = super().form_valid(form)
