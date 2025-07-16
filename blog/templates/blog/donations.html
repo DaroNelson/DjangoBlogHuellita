@@ -5,9 +5,9 @@
 {% block content %}
     <div class="row">
         <div class="col-lg-8 offset-lg-2">
-            <h1 class="mb-4 text-center">Apoya Nuestro Blog</h1>
+            <h1 class="mb-4 text-center">Ayudanos a seguir ayudando.</h1>
             <p class="lead text-center">
-                Tu generosidad es fundamental para mantener este proyecto vivo y seguir ofreciendo contenido de calidad. ¡Cada pequeña contribución cuenta!
+                 Cada donación, por mínima que sea, nos permite comprar alimento, medicamentos, pagar castraciones, traslados y emergencias veterinarias. No recibimos subsidios del Estado, todo se sostiene gracias a personas como vos, que eligen marcar la diferencia. Podés colaborar con transferencias, donando insumos o sumándote a campañas. ¡Tu aporte salva vidas!
             </p>
 
             <hr class="my-4">
@@ -16,11 +16,11 @@
                 <h3 class="card-title text-center mb-3">Datos para Transferencia Bancaria</h3>
                 <dl class="row mb-3">
                     <dt class="col-sm-4 text-end">Banco:</dt>
-                    <dd class="col-sm-8 fw-bold" id="bankName">{{ datos_cuenta.banco }} <button class="btn btn-sm btn-outline-secondary ms-2" onclick="copyToClipboard('bankName')">Copiar</button></dd>
+                    <dd class="col-sm-8 fw-bold" id="bankName">{{ datos_cuenta.banco }} </dd>
 
                     {% if datos_cuenta.tipo_cuenta %} {# Opcional: solo muestra si existe #}
                     <dt class="col-sm-4 text-end">Tipo de Cuenta:</dt>
-                    <dd class="col-sm-8" id="accountType">{{ datos_cuenta.tipo_cuenta }} <button class="btn btn-sm btn-outline-secondary ms-2" onclick="copyToClipboard('accountType')">Copiar</button></dd>
+                    <dd class="col-sm-8" id="accountType">{{ datos_cuenta.tipo_cuenta }} </dd>
                     {% endif %}
 
                     <dt class="col-sm-4 text-end">Número de Cuenta:</dt>
@@ -36,7 +36,7 @@
                     <dd class="col-sm-8 fw-bold" id="cuilHolder">{{ datos_cuenta.cuil_titular }} <button class="btn btn-sm btn-outline-secondary ms-2" onclick="copyToClipboard('cuilHolder')">Copiar</button></dd>
 
                     <dt class="col-sm-4 text-end">Nombre del Titular:</dt>
-                    <dd class="col-sm-8 fw-bold" id="accountHolderName">{{ datos_cuenta.nombre_titular }} <button class="btn btn-sm btn-outline-secondary ms-2" onclick="copyToClipboard('accountHolderName')">Copiar</button></dd>
+                    <dd class="col-sm-8 fw-bold" id="accountHolderName">{{ datos_cuenta.nombre_titular }} </dd>
                 </dl>
                 <div class="text-center mt-4">
                     <a href="{{ whatsapp_url }}" target="_blank" class="btn btn-success btn-lg whatsapp-style pulse">

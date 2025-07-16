@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-**ccu==o!-2umxc6d_&b+(e2&@h3fb5c6kx=+8es9v0c97v_wy
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']#antes estaba vacio
 
 
 # Application definition
@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'blog',
     'crispy_forms',     # 'crispy_bootstrap5', # Si usas Bootstrap 5
     'crispy_bootstrap5',
+    'django.contrib.sites',
 ]
 
 MIDDLEWARE = [
@@ -128,6 +129,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_REDIRECT_URL = '/' # Redirige a la página principal después de iniciar sesión
 LOGOUT_REDIRECT_URL = '/' # Redirige a la página principal después de cerrar sesión
+LOGIN_URL = '/login/'
+
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media' # Crea una carpeta 'media' en la raíz de tu proyecto
@@ -135,5 +138,28 @@ MEDIA_ROOT = BASE_DIR / 'media' # Crea una carpeta 'media' en la raíz de tu pro
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5" # Si usas Bootstrap 5
 CRISPY_TEMPLATE_PACK = "bootstrap5" # Si usas Bootstrap 5
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # Configuración de Correo Electrónico (para desarrollo) imprimirá los correos en la consola.
+
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'arg.formativa.arg@gmail.com' # ¡CAMBIA ESTO por tu dirección de Gmail!
+# EMAIL_HOST_PASSWORD = 'vwgk zeym avpd wlbi' # Tu contraseña de aplicación de Gmail
+# DEFAULT_FROM_EMAIL = 'arg.formativa.arg@gmail.com' # La dirección que aparecerá como remitente por defecto
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False  # Asegúrate de que esté en False cuando uses TLS
+EMAIL_HOST_USER = 'arg.formativa.arg@gmail.com'
+EMAIL_HOST_PASSWORD = 'vwgk zeym avpd wlbi'  # Tu contraseña de aplicación
+DEFAULT_FROM_EMAIL = 'arg.formativa.arg@gmail.com'
+SERVER_EMAIL = 'arg.formativa.arg@gmail.com'  # Para emails de error del servidor
+
+SITE_ID = 1
+
+# Configuración del nombre del sitio
+SITE_NAME = 'Huellitas'
