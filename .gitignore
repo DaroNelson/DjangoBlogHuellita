@@ -88,3 +88,22 @@ target/
 __pycache__/
 local_settings.py
 
+blog/__pycache__/__init__.cpython-313.pyc
+blog/__pycache__/__init__.cpython-313.pyc
+blog/__pycache__/__init__.cpython-313.pyc
+blog/__pycache__/__init__.cpython-313.pyc
+blog/__pycache__/admin.cpython-313.pyc
+blog/__pycache__/apps.cpython-313.pyc
+blog/__pycache__/context_processors.cpython-313.pyc
+blog/__pycache__/forms.cpython-313.pyc
+blog/__pycache__/models.cpython-313.pyc
+blog/__pycache__/urls.cpython-313.pyc
+blog/__pycache__/views.cpython-313.pyc
+blog/migrations/__pycache__/__init__.cpython-313.pyc
+blog/migrations/__pycache__/0001_initial.cpython-313.pyc
+blog/templatetags/__pycache__/__init__.cpython-313.pyc
+blog/templatetags/__pycache__/blog_tags.cpython-313.pyc
+mi_blog_noticias/__pycache__/__init__.cpython-313.pyc
+mi_blog_noticias/__pycache__/settings.cpython-313.pyc
+mi_blog_noticias/__pycache__/urls.cpython-313.pyc
+mi_blog_noticias/__pycache__/wsgi.cpython-313.pyc
