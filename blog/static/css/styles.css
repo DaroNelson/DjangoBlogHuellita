@@ -85,6 +85,553 @@ body.dark-mode .navbar .nav-link:hover {
     color: #66afe9 !important;
 }
 
+/* ===== NAVBAR TOGGLER MODERNO ===== */
+
+/* Botón menu personalizado */
+.navbar-toggler {
+    border: none !important;
+    padding: 8px 10px !important;
+    border-radius: 8px !important;
+    background: rgba(13, 110, 253, 0.1) !important;
+    transition: all 0.3s ease !important;
+    position: relative !important;
+    overflow: hidden !important;
+    width: 42px !important;
+    height: 42px !important;
+    display: none !important; /* Oculto por defecto en pantalla completa */
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.navbar-toggler:hover {
+    background: rgba(13, 110, 253, 0.2) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.2) !important;
+}
+
+.navbar-toggler:focus {
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25) !important;
+    outline: none !important;
+}
+
+.navbar-toggler:active {
+    transform: translateY(0) !important;
+}
+
+/* Efecto de brillo al hover */
+.navbar-toggler::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s ease;
+    z-index: 1;
+}
+
+.navbar-toggler:hover::before {
+    left: 100%;
+}
+
+/* Icono menu personalizado */
+.navbar-toggler-icon {
+    background-image: none !important;
+    width: 20px !important;
+    height: 2px !important;
+    position: relative !important;
+    display: block !important;
+    background-color: #0d6efd !important;
+    border-radius: 2px !important;
+    transition: all 0.3s ease !important;
+    z-index: 2;
+}
+
+/* Las líneas superior e inferior del menu */
+.navbar-toggler-icon::before,
+.navbar-toggler-icon::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background-color: #0d6efd !important;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+    left: 0;
+}
+
+.navbar-toggler-icon::before {
+    top: -6px;
+}
+
+.navbar-toggler-icon::after {
+    bottom: -6px;
+}
+
+/* Animación cuando el menú está expandido */
+.navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
+    background-color: transparent !important;
+    transform: rotate(180deg);
+}
+
+.navbar-toggler[aria-expanded="true"] .navbar-toggler-icon::before {
+    top: 0;
+    transform: rotate(45deg);
+    background-color: #dc3545 !important;
+}
+
+.navbar-toggler[aria-expanded="true"] .navbar-toggler-icon::after {
+    bottom: 0;
+    transform: rotate(-45deg);
+    background-color: #dc3545 !important;
+}
+
+/* Estilos para modo oscuro */
+body.dark-mode .navbar-toggler {
+    background: rgba(102, 175, 233, 0.1) !important;
+}
+
+body.dark-mode .navbar-toggler:hover {
+    background: rgba(102, 175, 233, 0.2) !important;
+    box-shadow: 0 4px 12px rgba(102, 175, 233, 0.2) !important;
+}
+
+body.dark-mode .navbar-toggler:focus {
+    box-shadow: 0 0 0 0.2rem rgba(102, 175, 233, 0.25) !important;
+}
+
+body.dark-mode .navbar-toggler-icon {
+    background-color: #66afe9 !important;
+}
+
+body.dark-mode .navbar-toggler-icon::before,
+body.dark-mode .navbar-toggler-icon::after {
+    background-color: #66afe9 !important;
+}
+
+body.dark-mode .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon::before,
+body.dark-mode .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon::after {
+    background-color: #ff6b6b !important;
+}
+
+/* Responsividad para el toggler */
+@media (max-width: 991.98px) {
+    .navbar-toggler {
+        display: flex !important; /* Visible solo en móvil */
+        margin-left: auto !important;
+    }
+}
+
+/* Asegurar que esté oculto en pantallas grandes */
+@media (min-width: 992px) {
+    .navbar-toggler {
+        display: none !important; /* Oculto en pantalla completa */
+    }
+}
+
+/* ===== FIN NAVBAR TOGGLER MODERNO =====
+
+/* ===== CONTENEDOR PRINCIPAL ===== */
+
+/* Contenedor principal de la aplicación */
+main.container {
+    min-height: calc(100vh - 200px);
+    padding-bottom: 1rem;
+    margin-bottom: 0;
+}
+
+/* Columna centrada para contenido */
+main .col-lg-8.mx-auto {
+    max-width: 100%;
+}
+
+/* Asegurar márgenes consistentes */
+main .row {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+/* Asegurar que el body permita mostrar el footer */
+body {
+    padding-bottom: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+/* Responsividad para contenedor */
+@media (min-width: 992px) {
+    main .col-lg-8.mx-auto {
+        max-width: 75%;
+    }
+}
+
+@media (min-width: 1200px) {
+    main .col-lg-8.mx-auto {
+        max-width: 66.666667%;
+    }
+}
+
+/* ===== FIN CONTENEDOR PRINCIPAL =====
+
+/* ===== ANIMACIONES PARA INTERACCIONES ===== */
+
+/* Animación de shake para botón de like no autenticado */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
+    20%, 40%, 60%, 80% { transform: translateX(2px); }
+}
+
+.shake-animation {
+    animation: shake 0.5s ease-in-out !important;
+}
+
+/* Transición suave para mensajes que aparecen/desaparecen */
+#login-message {
+    transition: opacity 0.3s ease-in-out !important;
+}
+
+#login-message.d-none {
+    opacity: 0 !important;
+}
+
+#login-message:not(.d-none) {
+    opacity: 1 !important;
+}
+
+/* Estilo mejorado para el mensaje de login */
+#login-message,
+.login-message-inline {
+    font-size: 0.875rem !important;
+    color: #dc3545 !important;
+    font-weight: 500 !important;
+    text-shadow: none !important;
+    padding: 0.25rem 0.5rem !important;
+    background: rgba(220, 53, 69, 0.1) !important;
+    border-radius: 4px !important;
+    border: 1px solid rgba(220, 53, 69, 0.2) !important;
+    margin-left: 0.5rem !important;
+    display: inline-block !important;
+    transition: opacity 0.3s ease-in-out !important;
+}
+
+.login-message-inline.d-none {
+    opacity: 0 !important;
+    display: none !important;
+}
+
+.login-message-inline:not(.d-none) {
+    opacity: 1 !important;
+    display: inline-block !important;
+}
+
+/* Modo oscuro para el mensaje de login */
+body.dark-mode #login-message,
+body.dark-mode .login-message-inline {
+    color: #ff6b6b !important;
+    background: rgba(255, 107, 107, 0.1) !important;
+    border-color: rgba(255, 107, 107, 0.2) !important;
+}
+
+/* ===== FIN ANIMACIONES PARA INTERACCIONES =====
+
+/* ===== FOOTER MODERNO - ESTILOS REFORZADOS ===== */
+
+footer#footer {
+    background: linear-gradient(135deg, #0d6efd 0%, #20c997 35%, #0dcaf0 100%) !important;
+    position: relative !important;
+    width: 100% !important;
+    min-height: 120px !important;
+    padding: 40px 50px 30px !important;
+    margin-top: 4rem !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    flex-direction: column !important;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    border: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+/* Efecto glassmorphism overlay */
+footer#footer::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    z-index: 1 !important;
+}
+
+footer#footer > * {
+    position: relative !important;
+    z-index: 2 !important;
+}
+
+/* Iconos sociales */
+footer .social-icon {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    position: relative !important;
+    margin: 15px 5px !important;
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+    list-style: none !important;
+}
+
+footer .icon-elem {
+    list-style: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+footer .icon {
+    color: #fff !important;
+    font-size: 28px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 0 8px !important;
+    width: 50px !important;
+    height: 50px !important;
+    border-radius: 50% !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+    text-decoration: none !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+}
+
+footer .icon:hover {
+    transform: translateY(-8px) scale(1.1) !important;
+    background: rgba(255, 255, 255, 0.2) !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2) !important;
+    color: #fff !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
+    text-decoration: none !important;
+}
+
+/* Efectos específicos por red social */
+footer .icon:hover .fab.fa-facebook-f {
+    color: #4267B2 !important;
+}
+
+footer .icon:hover .fab.fa-twitter {
+    color: #1DA1F2 !important;
+}
+
+footer .icon:hover .fab.fa-instagram {
+    color: #E4405F !important;
+}
+
+footer .icon:hover .fab.fa-linkedin-in {
+    color: #0077B5 !important;
+}
+
+footer .icon:hover .fab.fa-youtube {
+    color: #FF0000 !important;
+}
+
+/* Menú del footer */
+footer .menu {
+    display: flex !important;
+    justify-content: center !important;
+    position: relative !important;
+    align-items: center !important;
+    margin: 20px 0 15px !important;
+    flex-wrap: wrap !important;
+    gap: 5px !important;
+    list-style: none !important;
+}
+
+footer .menu-elem {
+    list-style: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+footer .menu-icon {
+    color: #fff !important;
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    display: inline-block !important;
+    text-decoration: none !important;
+    margin: 5px 15px !important;
+    padding: 8px 16px !important;
+    border-radius: 25px !important;
+    opacity: 0.8 !important;
+    transition: all 0.3s ease !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    letter-spacing: 0.5px !important;
+}
+
+footer .menu-icon:hover {
+    opacity: 1 !important;
+    color: #fff !important;
+    background: rgba(255, 255, 255, 0.15) !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+    text-decoration: none !important;
+}
+
+/* Texto del footer */
+footer .text {
+    color: #fff !important;
+    text-align: center !important;
+    margin-top: 20px !important;
+    margin-bottom: 0 !important;
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    line-height: 1.6 !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
+}
+
+footer .text small {
+    font-size: 14px !important;
+    opacity: 0.9 !important;
+    font-weight: 400 !important;
+    display: block !important;
+    margin-top: 5px !important;
+    font-style: italic !important;
+}
+
+/* Modo oscuro para el footer */
+body.dark-mode footer#footer {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 35%, #0f3460 100%) !important;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3) !important;
+}
+
+body.dark-mode footer#footer::before {
+    background: rgba(0, 0, 0, 0.2) !important;
+}
+
+body.dark-mode footer .icon {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+body.dark-mode footer .icon:hover {
+    background: rgba(255, 255, 255, 0.15) !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+body.dark-mode footer .menu-icon {
+    background: rgba(255, 255, 255, 0.03) !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+body.dark-mode footer .menu-icon:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Responsividad del footer */
+@media (max-width: 768px) {
+    footer#footer {
+        padding: 30px 20px 25px !important;
+        min-height: 100px !important;
+    }
+    
+    footer .social-icon {
+        margin: 10px 5px !important;
+    }
+    
+    footer .icon {
+        font-size: 24px !important;
+        width: 45px !important;
+        height: 45px !important;
+        margin: 0 6px !important;
+    }
+    
+    footer .menu {
+        margin: 15px 0 10px !important;
+    }
+    
+    footer .menu-icon {
+        font-size: 14px !important;
+        margin: 3px 8px !important;
+        padding: 6px 12px !important;
+    }
+    
+    footer .text {
+        font-size: 14px !important;
+        margin-top: 15px !important;
+        padding: 0 10px !important;
+    }
+    
+    footer .text small {
+        font-size: 12px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    footer#footer {
+        padding: 25px 15px 20px !important;
+    }
+    
+    footer .social-icon {
+        gap: 5px !important;
+    }
+    
+    footer .icon {
+        font-size: 20px !important;
+        width: 40px !important;
+        height: 40px !important;
+        margin: 0 4px !important;
+    }
+    
+    footer .menu-icon {
+        margin: 2px 5px !important;
+        padding: 5px 10px !important;
+        font-size: 13px !important;
+    }
+}
+
+/* ===== FIN FOOTER MODERNO - ESTILOS REFORZADOS =====
+
+/* ===== SOBRESCRIBIR ESTILOS DE BOOTSTRAP PARA FOOTER ===== */
+
+/* Asegurar que Bootstrap no interfiera con el footer */
+footer {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+footer ul, footer li {
+    margin: 0 !important;
+    padding: 0 !important;
+    list-style: none !important;
+}
+
+footer a {
+    text-decoration: none !important;
+}
+
+footer a:hover {
+    text-decoration: none !important;
+}
+
+/* Reset para listas en footer */
+footer ul.icon-elem,
+footer ul.menu-elem {
+    margin-bottom: 0 !important;
+    padding-left: 0 !important;
+}
+
+/* ===== FIN SOBRESCRIBIR ESTILOS DE BOOTSTRAP PARA FOOTER =====
+
 /* Botones principales */
 .btn-primary {
     font-family: var(--font-primary);
@@ -1292,15 +1839,40 @@ body.dark-mode .list-group-item:hover {
     background-color: rgba(255, 255, 255, 0.9);
     border-color: rgba(13, 110, 253, 0.2);
     transition: all 0.3s ease;
+    font-weight: 500;
 }
 
 .page-link:hover {
-    color: #fff;
+    color: #fff !important;
     background-color: var(--text-accent);
     border-color: var(--text-accent);
     transform: translateY(-2px);
+    text-decoration: none;
 }
 
+.page-link:focus {
+    color: #fff !important;
+    background-color: var(--text-accent);
+    border-color: var(--text-accent);
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+/* Elemento activo de paginación */
+.page-item.active .page-link {
+    color: #fff !important;
+    background-color: var(--text-accent) !important;
+    border-color: var(--text-accent) !important;
+    z-index: 3;
+    font-weight: 600;
+}
+
+.page-item.active .page-link:hover {
+    color: #fff !important;
+    background-color: var(--text-accent) !important;
+    border-color: var(--text-accent) !important;
+}
+
+/* Modo oscuro para paginación */
 body.dark-mode .page-link {
     color: var(--text-accent-dark);
     background-color: rgba(35, 39, 43, 0.9);
@@ -1308,19 +1880,28 @@ body.dark-mode .page-link {
 }
 
 body.dark-mode .page-link:hover {
-    color: #fff;
+    color: #fff !important;
     background-color: var(--text-accent-dark);
     border-color: var(--text-accent-dark);
 }
 
-.page-item.active .page-link {
-    background-color: var(--text-accent);
-    border-color: var(--text-accent);
+body.dark-mode .page-link:focus {
+    color: #fff !important;
+    background-color: var(--text-accent-dark);
+    border-color: var(--text-accent-dark);
+    box-shadow: 0 0 0 0.2rem rgba(102, 175, 233, 0.25);
 }
 
 body.dark-mode .page-item.active .page-link {
-    background-color: var(--text-accent-dark);
-    border-color: var(--text-accent-dark);
+    color: #fff !important;
+    background-color: var(--text-accent-dark) !important;
+    border-color: var(--text-accent-dark) !important;
+}
+
+body.dark-mode .page-item.active .page-link:hover {
+    color: #fff !important;
+    background-color: var(--text-accent-dark) !important;
+    border-color: var(--text-accent-dark) !important;
 }
 
 /* ===== COMPONENTES MEJORADOS PARA AMBOS MODOS ===== */
@@ -2185,4 +2766,243 @@ body.dark-mode .btn-primary:hover {
     color: #fff !important;
     box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.2) !important;
 }
+
+/* ===== ESTILOS PARA COMENTARIOS MEJORADOS ===== */
+
+/* Sección de comentarios */
+.comments-section {
+    max-height: none;
+    overflow: visible;
+}
+
+/* Items individuales de comentarios */
+.comment-item {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+    transition: all 0.3s ease !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.comment-item:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08) !important;
+    border-color: rgba(13, 110, 253, 0.2) !important;
+}
+
+.comment-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    background: linear-gradient(135deg, #0d6efd, #20c997);
+    border-radius: 12px 0 0 12px;
+}
+
+/* Header del comentario */
+.comment-header {
+    flex: 1;
+}
+
+.avatar-circle {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #0d6efd, #20c997);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 16px;
+    box-shadow: 0 2px 8px rgba(13, 110, 253, 0.2);
+}
+
+.comment-header h6 {
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin-bottom: 2px !important;
+}
+
+.comment-header small {
+    font-size: 0.825rem;
+    font-weight: 400;
+    color: #6c757d !important;
+}
+
+/* Contenido del comentario */
+.comment-content {
+    margin-top: 12px;
+    padding-left: 52px;
+}
+
+.comment-content p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #495057;
+    margin-bottom: 0 !important;
+}
+
+/* Acciones del comentario */
+.comment-actions .dropdown-toggle {
+    border: none !important;
+    background: transparent !important;
+    color: #6c757d !important;
+    padding: 4px 8px !important;
+    border-radius: 6px !important;
+    transition: all 0.2s ease !important;
+}
+
+.comment-actions .dropdown-toggle:hover {
+    background: rgba(13, 110, 253, 0.1) !important;
+    color: #0d6efd !important;
+}
+
+.comment-actions .dropdown-menu {
+    border: none !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+    border-radius: 8px !important;
+    min-width: 150px !important;
+}
+
+.comment-actions .dropdown-item {
+    padding: 8px 16px !important;
+    font-size: 0.875rem !important;
+    border-radius: 6px !important;
+    margin: 2px !important;
+    transition: all 0.2s ease !important;
+}
+
+.comment-actions .dropdown-item:hover {
+    background: rgba(13, 110, 253, 0.1) !important;
+    color: #0d6efd !important;
+}
+
+.comment-actions .dropdown-item.text-danger:hover {
+    background: rgba(220, 53, 69, 0.1) !important;
+    color: #dc3545 !important;
+}
+
+/* Estado vacío */
+.empty-state {
+    padding: 2rem 1rem;
+}
+
+.empty-state i {
+    opacity: 0.6;
+}
+
+.empty-state h5 {
+    font-weight: 600;
+    margin-bottom: 0.5rem !important;
+}
+
+.empty-state p {
+    font-size: 0.9rem;
+    margin-bottom: 0 !important;
+}
+
+/* MODO OSCURO - Comentarios */
+body.dark-mode .comment-item {
+    background: rgba(35, 39, 43, 0.95) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+body.dark-mode .comment-item:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5) !important;
+    border-color: rgba(102, 175, 233, 0.3) !important;
+}
+
+body.dark-mode .comment-item::before {
+    background: linear-gradient(135deg, #66afe9, #20c997);
+}
+
+body.dark-mode .avatar-circle {
+    background: linear-gradient(135deg, #66afe9, #20c997);
+}
+
+body.dark-mode .comment-header h6 {
+    color: #66afe9 !important;
+}
+
+body.dark-mode .comment-header small {
+    color: #adb5bd !important;
+}
+
+body.dark-mode .comment-content p {
+    color: #dee2e6 !important;
+}
+
+body.dark-mode .comment-actions .dropdown-toggle {
+    color: #adb5bd !important;
+}
+
+body.dark-mode .comment-actions .dropdown-toggle:hover {
+    background: rgba(102, 175, 233, 0.2) !important;
+    color: #66afe9 !important;
+}
+
+body.dark-mode .comment-actions .dropdown-menu {
+    background: #343a40 !important;
+    border: 1px solid #495057 !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
+}
+
+body.dark-mode .comment-actions .dropdown-item {
+    color: #dee2e6 !important;
+}
+
+body.dark-mode .comment-actions .dropdown-item:hover {
+    background: rgba(102, 175, 233, 0.2) !important;
+    color: #66afe9 !important;
+}
+
+body.dark-mode .comment-actions .dropdown-item.text-danger {
+    color: #ff6b6b !important;
+}
+
+body.dark-mode .comment-actions .dropdown-item.text-danger:hover {
+    background: rgba(255, 107, 107, 0.2) !important;
+    color: #ff6b6b !important;
+}
+
+body.dark-mode .empty-state i {
+    color: #6c757d !important;
+}
+
+body.dark-mode .empty-state h5 {
+    color: #adb5bd !important;
+}
+
+body.dark-mode .empty-state p {
+    color: #6c757d !important;
+}
+
+/* Responsividad para comentarios */
+@media (max-width: 768px) {
+    .comment-content {
+        padding-left: 0;
+        margin-top: 12px;
+    }
+    
+    .avatar-circle {
+        width: 36px;
+        height: 36px;
+        font-size: 14px;
+    }
+    
+    .comment-header h6 {
+        font-size: 0.95rem;
+    }
+    
+    .comment-actions .dropdown-menu {
+        min-width: 120px !important;
+    }
+}
+
+/* ===== FIN ESTILOS PARA COMENTARIOS MEJORADOS =====
 

@@ -42,11 +42,11 @@
                         </form>
                     {% endif %}
                 {% else %}
-                    {# Si el usuario no está autenticado, el botón está deshabilitado #}
-                    <button class="btn btn-outline-primary btn-sm me-2" disabled>
+                    {# Si el usuario no está autenticado, mostrar botón clickeable #}
+                    <button class="btn btn-outline-primary btn-sm me-2" id="like-btn-anonymous" data-post-id="{{ post.id }}">
                         <i class="bi bi-heart"></i> Me gusta
                     </button>
-                    <small class="text-muted">Inicia sesión para dar Me Gusta</small>
+                    <small class="text-muted d-none" id="login-message">Inicia sesión para dar Me Gusta</small>
                 {% endif %}
 
                 {# Conteo de Likes #}
@@ -107,40 +107,72 @@
             </div>
 
             {# Lista de Comentarios Existentes #}
-                    Comentarios ({{ post.comentarios.count }})
+            <div class="card mt-4">
+                <div class="card-header d-flex align-items-center">
+                    <i class="fas fa-comments me-2 text-primary"></i>
+                    <h5 class="mb-0">Comentarios ({{ post.comentarios.count }})</h5>
+                </div>
+                <div class="card-body">
                     {% if post.comentarios.exists %}
-    
-                        {% for comentario in post.comentarios.all %}
-            
-                
-                    
-                        
-                            
-                                {{ comentario.autor.username }} ~ {{ comentario.fecha_creacion|date:"d M, Y H:i" }}
-                            
-                            {{ comentario.contenido|linebreaksbr }}
-                        
-                        
-                        {# Botones de Editar y Eliminar #}
-
-                        {% if user.is_authenticated and user == comentario.autor or user.is_superuser %}
-                            <div class="mt-2">
-                                <a href="{% url 'comentario_edit' comentario.pk %}" class="btn btn-sm btn-warning me-2">
-                                    ✏️ Editar
-                                </a>
-                                <a href="{% url 'comentario_delete' comentario.pk %}" class="btn btn-sm btn-danger">
-                                    🗑️ Eliminar
-                                </a>
+                        <div class="comments-section">
+                            {% for comentario in post.comentarios.all %}
+                                <div class="comment-item card mb-3">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <div class="comment-header">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="avatar-circle me-2">
+                                                        <i class="fas fa-user"></i>
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-0 text-primary">{{ comentario.autor.username }}</h6>
+                                                        <small class="text-muted">
+                                                            <i class="fas fa-clock me-1"></i>
+                                                            {{ comentario.fecha_creacion|date:"d M, Y H:i" }}
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% if user.is_authenticated and user == comentario.autor or user.is_superuser %}
+                                                <div class="comment-actions">
+                                                    <div class="dropdown">
+                                                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                            <i class="fas fa-ellipsis-v"></i>
+                                                        </button>
+                                                        <ul class="dropdown-menu dropdown-menu-end">
+                                                            <li>
+                                                                <a class="dropdown-item" href="{% url 'comentario_edit' comentario.pk %}">
+                                                                    <i class="fas fa-edit me-2"></i>Editar
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item text-danger" href="{% url 'comentario_delete' comentario.pk %}">
+                                                                    <i class="fas fa-trash me-2"></i>Eliminar
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="comment-content">
+                                            <p class="mb-0">{{ comentario.contenido|linebreaksbr }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <div class="empty-state">
+                                <i class="fas fa-comment-slash fa-3x text-muted mb-3"></i>
+                                <h5 class="text-muted">Aún no hay comentarios</h5>
+                                <p class="text-muted">¡Sé el primero en comentar este post!</p>
                             </div>
-                        {% endif %}
-                    
-                
-            
-                    {% endfor %}
-    
-                {% else %}
-                Aún no hay comentarios. ¡Sé el primero en comentar!
-                {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
             
 
 
@@ -150,4 +182,31 @@
 
         </div>
     </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Manejar clic en botón de like para usuarios no autenticados
+    const anonymousLikeBtn = document.getElementById('like-btn-anonymous');
+    const loginMessage = document.getElementById('login-message');
+    
+    if (anonymousLikeBtn && loginMessage) {
+        anonymousLikeBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Mostrar el mensaje
+            loginMessage.classList.remove('d-none');
+            
+            // Opcional: Agregar animación de shake al botón
+            this.classList.add('shake-animation');
+            
+            // Ocultar el mensaje después de 3 segundos
+            setTimeout(function() {
+                loginMessage.classList.add('d-none');
+                anonymousLikeBtn.classList.remove('shake-animation');
+            }, 3000);
+        });
+    }
+});
+</script>
+
 {% endblock content %}

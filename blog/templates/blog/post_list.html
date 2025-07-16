@@ -89,9 +89,16 @@
                 </div>
                 <div>
                     <span class="like-count me-2">{{ post.likes.count }}</span>
-                    <a href="#" class="like-btn {% if user in post.likes.all %}liked{% endif %}" data-post-id="{{ post.id }}">
-                        <i class="fas fa-heart"></i>
-                    </a>
+                    {% if user.is_authenticated %}
+                        <a href="#" class="like-btn {% if user in post.likes.all %}liked{% endif %}" data-post-id="{{ post.id }}">
+                            <i class="fas fa-heart"></i>
+                        </a>
+                    {% else %}
+                        <a href="#" class="like-btn-anonymous" data-post-id="{{ post.id }}">
+                            <i class="fas fa-heart"></i>
+                        </a>
+                        <small class="text-muted d-none login-message-inline">Inicia sesión para dar Me Gusta</small>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -124,7 +131,7 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Like button functionality
+    // Like button functionality para usuarios autenticados
     const likeButtons = document.querySelectorAll('.like-btn');
     likeButtons.forEach(button => {
         button.addEventListener('click', function(e) {
@@ -144,6 +151,31 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 })
                 .catch(error => console.error('Error:', error));
+        });
+    });
+
+    // Like button functionality para usuarios NO autenticados
+    const anonymousLikeButtons = document.querySelectorAll('.like-btn-anonymous');
+    anonymousLikeButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Buscar el mensaje de login correspondiente
+            const loginMessage = this.parentElement.querySelector('.login-message-inline');
+            
+            if (loginMessage) {
+                // Mostrar el mensaje
+                loginMessage.classList.remove('d-none');
+                
+                // Agregar animación de shake al botón
+                this.classList.add('shake-animation');
+                
+                // Ocultar el mensaje después de 3 segundos
+                setTimeout(() => {
+                    loginMessage.classList.add('d-none');
+                    this.classList.remove('shake-animation');
+                }, 3000);
+            }
         });
     });
 });

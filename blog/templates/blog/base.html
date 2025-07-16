@@ -18,7 +18,7 @@
     <!-- Bootstrap & FontAwesome -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}?v=2.2">
     <style>
         body { 
             padding-top: 70px; 
@@ -96,18 +96,66 @@
     </nav>
 
     <main class="container mt-5 pt-4">
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            {% endfor %}
-        {% endif %}
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
 
-        {% block content %}
-        {% endblock content %}
+                {% block content %}
+                {% endblock content %}
+            </div>
+        </div>
     </main>
+
+    <!-- Footer -->
+    <footer id="footer">
+        <div class="social-icon">
+            <ul class="icon-elem">
+                <li><a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" class="icon" title="Síguenos en Facebook"><i class="fab fa-facebook-f"></i></a></li>
+            </ul>
+            <ul class="icon-elem">
+                <li><a href="https://www.twitter.com" target="_blank" rel="noopener noreferrer" class="icon" title="Síguenos en Twitter"><i class="fab fa-twitter"></i></a></li>
+            </ul>
+            <ul class="icon-elem">
+                <li><a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" class="icon" title="Síguenos en Instagram"><i class="fab fa-instagram"></i></a></li>
+            </ul>
+            <ul class="icon-elem">
+                <li><a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer" class="icon" title="Conéctate en LinkedIn"><i class="fab fa-linkedin-in"></i></a></li>
+            </ul>
+            <ul class="icon-elem">
+                <li><a href="https://www.youtube.com" target="_blank" rel="noopener noreferrer" class="icon" title="Suscríbete a nuestro canal"><i class="fab fa-youtube"></i></a></li>
+            </ul>
+        </div>
+        
+        <div class="menu">
+            <ul class="menu-elem">
+                <li><a href="{% url 'post_list' %}" class="menu-icon">Inicio</a></li>
+            </ul>
+            <ul class="menu-elem">
+                <li><a href="{% url 'about' %}" class="menu-icon">Acerca de</a></li>
+            </ul>
+            <ul class="menu-elem">
+                <li><a href="{% url 'contact' %}" class="menu-icon">Contacto</a></li>
+            </ul>
+            <ul class="menu-elem">
+                <li><a href="{% url 'donations' %}" class="menu-icon">Donaciones</a></li>
+            </ul>
+            <ul class="menu-elem">
+                <li><a href="{% url 'category_overview' %}" class="menu-icon">Categorías</a></li>
+            </ul>
+        </div>
+        
+        <p class="text">
+            © 2025 Huellitas Blog. Todos los derechos reservados.<br>
+            <small>Conectando corazones con historias de amor animal</small>
+        </p>
+    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
