@@ -36,12 +36,14 @@
     * Implementado con Bootstrap 5 para una experiencia consistente en diferentes dispositivos.
     * Modo Oscuro/Claro (Dark/Light Mode) con persistencia de preferencia en `localStorage`.
 
-## Estructura del Proyecto
-
+# Estructura del Proyecto
 El proyecto sigue una estructura típica de Django:
+
+
+```
 mi_blog_noticias/
 ├── mi_blog_noticias/       # Directorio principal del proyecto (configuración global)
-│   ├── init.py
+│   ├── __init__.py
 │   ├── settings.py         # Configuración del proyecto
 │   ├── urls.py             # URLs principales del proyecto
 │   └── wsgi.py
@@ -69,7 +71,7 @@ mi_blog_noticias/
 │   │       ├── password_reset_form.html
 │   │       ├── password_reset_done.html
 │   │       └── password_reset_confirm.html
-│   ├── init.py
+│   ├── __init__.py
 │   ├── admin.py            # Registro de modelos en el panel de administración
 │   ├── apps.py
 │   ├── context_processors.py # Para pasar datos globales a las plantillas
@@ -80,6 +82,29 @@ mi_blog_noticias/
 ├── media/                  # Almacena los archivos subidos por los usuarios (ej. imágenes de posts)
 ├── db.sqlite3              # Base de datos SQLite (para desarrollo)
 └── manage.py               # Utilidad de línea de comandos de Django
+```
+
+## Descripción de Componentes
+
+### Directorio Principal (`mi_blog_noticias/`)
+- **settings.py**: Configuración global del proyecto Django
+- **urls.py**: Definición de URLs principales
+- **wsgi.py**: Configuración para servidor web
+
+### Aplicación Blog (`blog/`)
+- **models.py**: Definición de modelos de datos
+- **views.py**: Lógica de controladores
+- **forms.py**: Formularios para entrada de datos
+- **admin.py**: Configuración del panel administrativo
+
+### Templates
+- **blog/**: Plantillas específicas del blog
+- **registration/**: Plantillas para sistema de autenticación
+
+### Archivos Estáticos y Media
+- **static/**: CSS, JavaScript e imágenes del proyecto
+- **media/**: Archivos subidos por usuarios
+
 
 ## Modelos de Base de Datos (blog/models.py)
 
@@ -151,23 +176,9 @@ Las vistas implementan la lógica de negocio y manejan las solicitudes HTTP.
 ### `mi_blog_noticias/urls.py` (URL's principales del proyecto)
 Este archivo enruta las solicitudes a la aplicación `blog` y maneja las URLs de administración y autenticación de Django.
 
-```python
-# Contenido general de mi_blog_noticias/urls.py (Ejemplo, el tuyo puede variar ligeramente)
-from django.contrib import admin
-from django.urls import path, include
-from django.conf import settings
-from django.conf.urls.static import static
 
-urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('blog.urls')), # Incluye las URLs de la aplicación 'blog'
-]
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-
-blog/urls.py (URL's de la aplicación blog)
+### `blog/urls.py` (URL's de la aplicación blog)
 Este archivo define las rutas específicas para la aplicación blog, incluyendo posts, comentarios, categorías y autenticación.
 
 Algunas de las rutas clave incluyen:
@@ -208,78 +219,15 @@ Algunas de las rutas clave incluyen:
 
 URLs para restablecimiento de contraseña (password_reset, password_reset_done, password_reset_confirm, password_reset_complete).
 
-Herramientas y Tecnologías
-Django 5.2.4: Framework web de Python.
 
-Python: Lenguaje de programación principal.
+# Herramientas y Tecnologías
 
-SQLite3: Base de datos utilizada en entorno de desarrollo.
+- **Django 5.2.4:** Framework web de Python.
+- **Python:** Lenguaje de programación principal.
+- **SQLite3:** Base de datos utilizada en entorno de desarrollo.
+- **Bootstrap 5:** Framework CSS para el diseño responsivo.
+- **Crispy Forms & Crispy Bootstrap5:** Para un renderizado de formularios más limpio y sencillo.
+- **Pillow:** Librería para el manejo de imágenes (requerida para `ImageField`).
+- **Font Awesome & Bootstrap Icons:** Para iconos.
+- **Google Fonts:** Fuentes personalizadas para la tipografía.
 
-Bootstrap 5: Framework CSS para el diseño responsivo.
-
-Crispy Forms & Crispy Bootstrap5: Para un renderizado de formularios más limpio y sencillo.
-
-Pillow: Librería para el manejo de imágenes (requerida para ImageField).
-
-Font Awesome & Bootstrap Icons: Para iconos.
-
-Google Fonts: Fuentes personalizadas para la tipografía.
-
-Configuración y Entorno de Desarrollo
-Requisitos
-Python 3.x
-
-pip (gestor de paquetes de Python)
-
-Pasos de Instalación y Ejecución
-Clonar el repositorio:
-
-Bash
-
-git clone <URL_DE_TU_REPOSITORIO>
-cd mi_blog_noticias
-Crear y activar un entorno virtual:
-Es una buena práctica aislar las dependencias del proyecto.
-
-Bash
-
-python -m venv venv
-# En Windows:
-.\venv\Scripts\activate
-# En macOS/Linux:
-source venv/bin/activate
-Instalar las dependencias:
-Crea un archivo requirements.txt con todas tus dependencias (ej. Django, Pillow, django-crispy-forms, crispy-bootstrap5).
-
-Bash
-
-pip install -r requirements.txt
-Si no tienes un requirements.txt, puedes instalarlas manualmente:
-
-Bash
-
-pip install Django pillow django-crispy-forms crispy-bootstrap5
-Realizar migraciones de base de datos:
-Esto creará las tablas de la base de datos definidas por tus modelos.
-
-Bash
-
-python manage.py makemigrations blog
-python manage.py migrate
-Crear un superusuario (administrador):
-Necesitarás un superusuario para acceder al panel de administración de Django y crear contenido.
-
-Bash
-
-python manage.py createsuperuser
-Sigue las instrucciones en pantalla para establecer un nombre de usuario, correo electrónico y contraseña.
-
-Configurar el correo electrónico para el formulario de contacto (opcional):
-En mi_blog_noticias/settings.py, descomenta y configura las variables EMAIL_BACKEND, EMAIL_HOST, EMAIL_PORT, EMAIL_USE_TLS, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD, y DEFAULT_FROM_EMAIL con tus credenciales SMTP (por ejemplo, de Gmail). Si usas Gmail, recuerda generar una "contraseña de aplicación" en tu cuenta de Google.
-
-Ejecutar el servidor de desarrollo:
-
-Bash
-
-python manage.py runserver
-El blog estará disponible en http://127.0.0.1:8000/.
