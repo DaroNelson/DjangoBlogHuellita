@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-**ccu==o!-2umxc6d_&b+(e2&@h3fb5c6kx=+8es9v0c97v_wy
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'johac.pythonanywhere.com']#antes estaba vacio
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'johac.pythonanywhere.com', 'www.johac.pythonanywhere.com']#antes estaba vacio
 
 
 # Application definition
@@ -164,3 +164,6 @@ SITE_ID = 1
 
 # Configuración del nombre del sitio
 SITE_NAME = 'Huellitas'
+
+# CSRF_TRUSTED_ORIGINS (si tienes problemas con formularios POST)
+CSRF_TRUSTED_ORIGINS = ['https://johac.pythonanywhere.com']
