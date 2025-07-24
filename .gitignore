@@ -1,4 +1,4 @@
-#db.sqlite3
+db.sqlite3
 ve/
 
 # Created by https://www.gitignore.io
@@ -107,3 +107,84 @@ mi_blog_noticias/__pycache__/__init__.cpython-313.pyc
 mi_blog_noticias/__pycache__/settings.cpython-313.pyc
 mi_blog_noticias/__pycache__/urls.cpython-313.pyc
 mi_blog_noticias/__pycache__/wsgi.cpython-313.pyc
+
+# ===============================================
+# Archivos de caché y compilados de Python
+# ===============================================
+__pycache__/              # Directorios de caché de bytecode de Python
+*.pyc                     # Archivos de bytecode compilado de Python
+*.pyo                     # Archivos optimizados de bytecode
+*.pyd                     # Archivos de módulo de extensión dinámica de Python
+.Python                   # Directorio temporal de Python
+
+# ===============================================
+# Entornos virtuales
+# ===============================================
+env/                      # Directorio común para entornos virtuales
+venv/                     # Directorio común para entornos virtuales
+.direnv/                  # Archivos de direnv (si usas)
+pip-log.txt               # Logs de pip
+pip-delete-this-arg.txt   # Argumentos temporales de pip
+
+# ===============================================
+# Archivos de Django
+# ===============================================
+# Base de datos SQLite de desarrollo (¡MUY IMPORTANTE NO SUBIR ESTO!)
+db.sqlite3                # Tu base de datos SQLite de desarrollo
+*.sqlite3                 # Cualquier archivo SQLite
+
+# Archivos de media y estáticos generados en PRODUCCIÓN
+# Estos son directorios donde Django colecta/almacena datos, no código fuente.
+media/                    # Directorio por defecto para MEDIA_ROOT (si lo usas así)
+mediafiles/               # Directorio para archivos subidos por el usuario (MEDIA_ROOT)
+staticfiles/              # Directorio para archivos estáticos recolectados (STATIC_ROOT)
+
+# Logs de Django u otros logs generados por la aplicación
+*.log
+
+# Archivos de migración (vacíos o con datos sensibles, ya se manejan por código)
+# Normalmente, solo ignorar la carpeta __pycache__ dentro de las migrations es suficiente,
+# pero si por alguna razón generas archivos de migración con datos sensibles,
+# o quieres un control más estricto, podrías añadir patrones aquí.
+# migration_file_with_sensitive_data.py
+
+# ===============================================
+# Archivos de IDEs y Editores (ej. VS Code, PyCharm)
+# ===============================================
+.vscode/                  # Directorio de configuración de VS Code
+.idea/                    # Directorio de configuración de PyCharm
+*.swp                     # Archivos de swap de Vim
+*.swo                     # Archivos de swap de Vim
+*~                        # Archivos de respaldo de editores
+.DS_Store                 # Archivos de macOS
+Thumbs.db                 # Archivos de Windows
+
+# ===============================================
+# Archivos específicos de sistemas operativos
+# ===============================================
+.directory                # Directorios especiales
+
+# ===============================================
+# Archivos de configuración local (si los usas)
+# ===============================================
+# Si alguna vez tienes un settings_local.py o similar con credenciales sensibles,
+# ¡DEBES IGNORARLO! (se usaría para sobrescribir settings.py en un entorno local)
+local_settings.py         # Ejemplo de archivo de configuración local
+
+# ===============================================
+# Archivos de entorno (dot-env)
+# ===============================================
+.env                      # Archivo de variables de entorno (ej. para almacenar SECRET_KEY, credenciales de DB)
+.flaskenv                 # Si usaras Flask (ejemplo)
+
+# ===============================================
+# Archivos de pruebas
+# ===============================================
+.pytest_cache/            # Caché de Pytest
+.coverage                 # Archivos de cobertura de código
+htmlcov/                  # Reportes HTML de cobertura
+
+# ===============================================
+# Jupyter Notebooks (si los usas para análisis o scripts)
+# ===============================================
+.ipynb_checkpoints/       # Puntos de control de Jupyter
